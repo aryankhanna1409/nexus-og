@@ -153,17 +153,21 @@ def run_pipeline(session: Session, params: PipelineParams, data_dir: Path) -> Pi
 
 
 def run_scenario(session: Session, scenario: Scenario, data_dir: Path,
-                 params: dict[str, object] | None = None) -> PipelineOutcome:
-    """Runs the full pipeline for any scenario (used by the API, tests and the agent)."""
+                 params: dict[str, object] | None = None, *, correlate_flag: bool = True) -> PipelineOutcome:
+    """Runs the full pipeline for any scenario (used by the API, tests and the agent).
+
+    `correlate_flag=False` stores telemetry, call analysis and anomalies but opens no
+    incidents (used for the agent's post-rollback verification runs).
+    """
     result = simulate(scenario)
     run = PipelineRun(scenario=scenario.name, seed=scenario.seed, status="running",
                       started_epoch=int(time.time()), finished_epoch=None,
                       data_start_epoch=int(result.epochs[0]), data_end_epoch=int(result.epochs[-1]),
                       fingerprint=result.fingerprint(),
-                      params=params if params is not None else {"scenario": scenario.name,
-                                                                "seed": scenario.seed,
-                                                                "minutes": scenario.minutes,
-                                                                "rollback_minute": scenario.rollback_minute})
+                      params={**(params or {"scenario": scenario.name}), "seed": scenario.seed,
+                              "minutes": scenario.minutes, "rollback_minute": scenario.rollback_minute,
+                              "incidents": [{**dataclasses.asdict(s), "type": s.type.value}
+                                            for s in scenario.incidents]})
     session.add(run)
     session.flush()
     prefix = f"R{run.id}-"
@@ -176,7 +180,7 @@ def run_scenario(session: Session, scenario: Scenario, data_dir: Path,
     series = series_from_simulation(result)
     anomalies: list[MetricAnomaly] = detect_anomalies(series)
     events = events_from_simulation(result)
-    incidents = correlate(anomalies, events, calls["anomalies"], series_lookup(series))
+    incidents = correlate(anomalies, events, calls["anomalies"], series_lookup(series)) if correlate_flag else []
 
     _store_metrics(session, run.id, result)
     _store_call_analysis(session, run.id, calls)

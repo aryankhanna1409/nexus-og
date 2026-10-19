@@ -7,7 +7,7 @@ from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request, Response
 
-from app.api import admin, calls, health, incidents, network, pipeline, rca, reports
+from app.api import admin, agent, calls, health, incidents, network, pipeline, rca, reports
 from app.config import Settings
 from app.db import make_engine, make_session_factory
 from app.llm.factory import build_provider
@@ -38,6 +38,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         response.headers["X-Request-ID"] = rid
         return response
 
-    for module in (health, pipeline, calls, network, incidents, rca, reports, admin):
+    for module in (health, pipeline, calls, network, incidents, rca, reports, agent, admin):
         app.include_router(module.router)
     return app

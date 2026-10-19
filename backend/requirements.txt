@@ -9,3 +9,4 @@ alembic==1.20.0
 psycopg[binary]==3.3.6
 Jinja2==3.1.6
 MarkupSafe==3.0.4
+pyflakes==4.0.3

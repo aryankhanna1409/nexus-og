@@ -208,7 +208,7 @@ HTML renderers (Jinja2 with autoescape); PDF optional/deferred.
 Acceptance: report for seeded incident contains every section, numeric findings
 match analytics output, confidence present, HTML escapes injected strings.
 
-### M9 — DevSecOps agent and action policy `[ ]`
+### M9 — DevSecOps agent and action policy `[x]`
 
 Scope: `backend/app/agents/`, `demo-workspace/` template. OBSERVE→ANALYZE→PLAN→
 ACT→VERIFY→CLOSE state machine; allowlisted tools (spec §10) each tagged with a
@@ -285,9 +285,9 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R11 | 7 | Cross-source correlation → Incident object | `app/analytics/correlation.py` | M5 | `tests/test_correlation.py` (29 tests) | verified |
 | R12 | 8 | LLM RCA with structured tools; facts vs hypotheses | `app/rca/`, `app/llm/` | M7 | `tests/test_rca.py` (44 tests; live-provider test opt-in, not run) | verified (mock + fake SDK clients) |
 | R13 | 9 | AI report (JSON/Markdown/HTML; PDF optional) | `app/reporting/` | M8 | `tests/test_reporting.py` (11 tests; PDF not implemented) | verified |
-| R14 | 10 | Agent tools + OBSERVE…CLOSE loop | `app/agents/` | M9 | `test_agent_loop.py` | planned |
-| R15 | 11 | Scenarios: vulnerable dependency, failed CI, production anomaly | `app/agents/scenarios/` | M9 | `test_agent_scenarios.py` | planned |
-| R16 | 12 | Action risk classes, approval gating, rationale, logging | `app/agents/policy.py` | M9 | `test_agent_policy.py` | planned |
+| R14 | 10 | Agent tools + OBSERVE…CLOSE loop | `app/agents/` | M9 | `tests/test_agent.py` (35 tests) | verified |
+| R15 | 11 | Scenarios: vulnerable dependency, failed CI, production anomaly | `app/agents/planner.py` | M9 | `test_vulnerable_dependency_flow`, `test_failed_ci_flow`, `test_production_anomaly_*` | verified (rollback is simulated) |
+| R16 | 12 | Action risk classes, approval gating, rationale, logging | `app/agents/policy.py`, `service.py` | M9 | `test_policy_table`, `test_blocked_action_never_executes`, `test_unapproved_action_cannot_execute_via_service`, `test_initiator_cannot_approve_own_action` | verified |
 | R17 | 13, 25 | Dashboard pages, KPI cards, charts, NOC aesthetic | `frontend/` | M12 | Vitest component tests + manual check | planned |
 | R18 | 14 | Interactive incident timeline | `frontend/`, `IncidentEvent` API | M12 | `Timeline.test.tsx`, API test | planned |
 | R19 | 15 | Schemas for 11 entities, Pydantic at API | `app/models`, `app/schemas/entities.py` | M6 | `tests/test_api_core.py` (responses validated through the schemas) | verified |
@@ -517,6 +517,21 @@ Entries record commands actually executed and their outcome.
   - Review of a generated report led to three fixes: "between…to"
     wording, a duplicated version in the correlation hypothesis text, and the
     onset sequence now labelled temporal rather than causal.
+- 2026-10-19 — **M9** (DevSecOps agent). Local Python 3.14: `make test` exit 0.
+  pytest **325 passed, 2 skipped**; ASan run 318 passed + 9 skipped; mypy clean
+  (81 files). Container Python 3.12: **325 passed, 2 skipped**, mypy clean.
+  - All 35 agent tests passed on the first run, so six gate mutations were
+    checked (scratch copy). Every one was detected:
+    - executing without approval → 3 tests failed
+    - no separation of duties → 1
+    - HIGH_RISK ignoring the policy flag → 2
+    - operator allowed to execute HIGH_RISK → 1
+    - runner allowing `python -c` → 3
+    - BLOCKED treated as approvable → 2
+  - mypy found 3 shadowed `_` arguments in tools (fixed).
+  - The rollback is a simulation (re-simulated telemetry, no
+    infrastructure). Recovery verified: the seeded scenario's KPIs returned
+    within the M4 practical deltas, with no open anomalies.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

@@ -470,20 +470,81 @@ API: `POST /api/reports/generate {incident_id}` (operator, audited
 (`RPT-INC-YYYY-NNN-NN`). `GET /api/reports?incident_id=` and `GET
 /api/reports/{report_id}?format=json|markdown|html` require viewer.
 
-### 3.5 DevSecOps agent — *(planned M9)*
+### 3.5 DevSecOps agent (`backend/app/agents/`, `demo-workspace/`) — implemented (M9)
 
-```python
-class RiskClass(StrEnum): READ_ONLY, LOW_RISK, REQUIRES_APPROVAL, HIGH_RISK, BLOCKED
-@dataclass class AgentTool: name; risk: RiskClass; args_model: type[BaseModel]; run: Callable
-class PolicyEngine: def decide(tool, args, context) -> PolicyDecision  # allow | needs_approval | deny
-class CommandRunner: def run(argv: Sequence[str], cwd: Path, timeout_s: float) -> CommandResult  # executable allowlist, no shell
-```
+**State machine** (`service.py`): OBSERVE → ANALYZE → PLAN → ACT → VERIFY →
+CLOSE; a run's phase never moves backwards.
+- The **planner** (`planner.py`) is deterministic: one playbook per scenario,
+  driven only by earlier action results. It never acts on LLM text; the LLM
+  contributes only through the RCA engine.
+- Every action is stored with its **rationale before it executes**, and is
+  audited when proposed, blocked, approved, denied, rejected, succeeded or
+  failed.
 
-The LLM may only select a tool name and structured arguments; it never supplies
-a command string. Every proposed action is stored as an `AgentAction` with
-`rationale`, `risk_class`, `status` (proposed → approved → executing → succeeded/failed,
-or denied) and audit rows. Execution happens in a disposable copy of
-`demo-workspace/`.
+**Policy** (`policy.py`, spec §12), re-checked inside `execute_action` (not
+only in the API):
+
+| Risk class | Behaviour |
+|---|---|
+| READ_ONLY, LOW_RISK | execute automatically |
+| REQUIRES_APPROVAL | `awaiting_approval`; an approver who is not the run's initiator approves; an operator+ executes |
+| HIGH_RISK | blocked unless `AGENT_ALLOW_HIGH_RISK=true`; then approval plus **admin** execution |
+| BLOCKED | never executes (`delete_infrastructure` has no implementation) |
+
+**Tools** (`tools.py`, spec §10):
+- READ_ONLY: `inspect_repository`, `inspect_git_diff`, `run_unit_tests`,
+  `run_linter` (pyflakes), `run_tests`, `run_security_scan`,
+  `inspect_dependencies`, `inspect_container`, `inspect_logs`,
+  `inspect_metrics`.
+- LOW_RISK: `create_incident`, `request_rca`, `generate_patch`,
+  `generate_report`, `close_incident`.
+- REQUIRES_APPROVAL: `apply_patch`, `modify_dependency`, `restart_service`
+  (not modelled by the simulator, so it always fails with an explanation).
+- HIGH_RISK: `rollback_deployment`.
+- BLOCKED: `delete_infrastructure`.
+
+Arguments are Pydantic-validated (`extra="forbid"`, strict, patterns).
+
+**Sandbox** (`runner.py`, `workspace.py`): each code-scenario run gets a
+disposable copy of `demo-workspace/` under `AGENT_WORKSPACE_ROOT/<run>`
+with its own git history. Commands are restricted as follows:
+- **Executables:** only `python` (this interpreter, `-m pytest|pyflakes`)
+  and `git` (`init|add|commit|diff|log|apply|status|rev-parse|show`, no
+  `-c` overrides).
+- **Invocation:** argv lists only, with `shell=False` enforced by a codebase
+  AST test.
+- **Confinement:** the working directory must be inside the workspace root,
+  and workspace-relative paths are resolved and checked.
+- **Environment:** scrubbed — no inherited secrets or `LD_PRELOAD`, no user
+  or system git config.
+- **Limits:** a timeout and output truncation.
+
+**Scenarios** (spec §11):
+1. `vulnerable_dependency`: scan, record a finding, find the smallest safe
+   release, `modify_dependency` (needs approval; never deployed), re-test,
+   re-scan, report, and mark the finding remediated.
+2. `failed_ci`: reproduce the failure, read the CI log, diff the last
+   commit, form a hypothesis (the changed module is exercised by a failing
+   test), `generate_patch` (revert), `apply_patch` (needs approval), run the
+   tests plus linter, report.
+3. `production_anomaly`: inspect metrics, acknowledge the incident, run RCA,
+   check the deployment registry, then `rollback_deployment` (HIGH_RISK).
+   The rollback is **simulated**: the scenario is re-simulated with the
+   rollback 45 min after onset, in a verification run that opens no
+   incidents. Recovery is verified as the last 30 min of KPIs within the
+   M4 practical deltas of the pre-incident baseline, with no open
+   anomalies. Then the incident is closed and a report generated. With
+   HIGH_RISK disabled, the rollback is recorded as `blocked` and the
+   incident stays open with the RCA recommendation for humans.
+
+Vulnerability data is a bundled synthetic database (`agents/data/advisories.json`,
+`DEMO-CVE-` ids, fictional packages); nothing is fetched from the network.
+
+API: `GET /api/agent/status` (policy table, pending approvals),
+`GET /api/agent/actions`, `GET /api/agent/runs[/{id}]` (viewer),
+`POST /api/agent/investigate {scenario, incident_id?}` (operator),
+`POST /api/agent/approve/{action_id} {decision, comment}` (approver),
+`POST /api/agent/execute/{action_id}` (operator; admin for HIGH_RISK).
 
 ### 3.6 Database (`backend/app/models/`, `backend/alembic/`) — implemented (M6)
 

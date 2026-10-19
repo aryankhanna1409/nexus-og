@@ -10,7 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M9 — DevSecOps agent** (depends on M6 ✅, M7 ✅).
+Next milestone: **M10 — Security hardening and observability** (depends on M8 ✅, M9 ✅).
 
 ## Milestones
 
@@ -23,7 +23,8 @@ Next milestone: **M9 — DevSecOps agent** (depends on M6 ✅, M7 ✅).
 | M5 Correlation engine | done | PASS | `c4a7d85` |
 | M6 Persistence/API/auth/audit | done | PASS | `c5881b6` (+ `a18b27c` whitespace fix) |
 | M7 LLM providers + RCA | done | PASS (real-provider calls not verified) | `6d4f4b0` |
-| M8 Reporting | done | PASS (PDF optional, not implemented) | (this commit; see git log) |
+| M8 Reporting | done | PASS (PDF optional, not implemented) | `90232af` |
+| M9 DevSecOps agent | done | PASS (rollback simulated by design) | (this commit; see git log) |
 
 ### M3 — Network telemetry simulation and seeded incidents
 
@@ -116,3 +117,17 @@ Next milestone: **M9 — DevSecOps agent** (depends on M6 ✅, M7 ✅).
 - Limitations: no PDF output. Impact call counts cover the whole analysed
   call log for the affected cells, not only the incident window (stated in
   the report text).
+
+### M9 — Autonomous DevSecOps agent
+
+- Implementation: `app/agents/` (policy, sandboxed command runner,
+  disposable git workspaces, synthetic DEMO-CVE advisory DB, 20 tools,
+  deterministic playbooks, orchestration with approvals), `demo-workspace/`,
+  `/api/agent/*`; pipeline gains `correlate_flag` and records incident specs
+  for re-simulation.
+- Commands: `make test`; `scripts/container_py312_test.sh`; 6 mutation runs.
+- Results: local 325 passed + 2 skipped, ASan 318 + 9 skipped, mypy clean.
+  Container 3.12: 325 + 2 skipped.
+- Limitations: playbooks are deterministic (the LLM only influences RCA
+  output); `restart_service` is registered but not modelled (always fails
+  with an explanation); patch generation is revert-based only.

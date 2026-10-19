@@ -1,0 +1,34 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
+htmlcov/
+
+# JavaScript
+node_modules/
+dist/
+.next/
+
+# Build artifacts
+build/
+build-*/
+cmake-build-*/
+*.so
+*.dll
+*.dylib
+*.o
+*.a
+
+# IDE and OS
+.vscode/
+.DS_Store
+Thumbs.db

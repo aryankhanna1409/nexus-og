@@ -673,14 +673,26 @@ Local development (WSL2):
 - Data: `make call-logs SEED=42` writes `data/call_logs/call_logs.csv` + manifest (git-ignored, reproducible).
 - Frontend: Node is not installed in WSL; use the `node` container (`make frontend-test`) *(planned)*.
 
-Docker (`docker compose up --build`) *(planned M11–M12)*:
+Docker (`docker compose up --build`) — implemented M11 (backend, PostgreSQL, Redis):
+
+```bash
+make env                    # once: writes .env (hashed tokens, Postgres password) + .aegis-tokens (raw tokens, 0600)
+docker compose up --build   # or: make docker-up
+make docker-smoke           # isolated build + API smoke test + teardown (does not touch .env)
+```
 
 | Service | Image | Notes |
 |---|---|---|
-| `postgres` | `postgres:16` | volume, healthcheck |
-| `redis` | `redis:7` | rate limit + queue |
-| `backend` | multi-stage: stage 1 builds + tests the C library with CMake; stage 2 `python:3.12-slim` with `.so` in `/usr/local/lib` | runs `alembic upgrade head` then uvicorn |
-| `frontend` | multi-stage: `node` build → `nginx` | proxies `/api` to backend |
+| `postgres` | `postgres:16` | volume `pgdata`, `pg_isready` healthcheck |
+| `redis` | `redis:7` | no persistence; rate-limit store; `redis-cli ping` healthcheck |
+| `backend` | `backend/Dockerfile` (context: repo root) | stage 1 builds libcallanalyzer with CMake **and runs ctest during the build**; stage 2 is `python:3.12-slim` with the `.so` in `/usr/local/lib`, git (agent sandbox), the pinned requirements (including the LLM SDKs), non-root user `aegis`, volume `/data`. Entrypoint: print library version → `alembic upgrade head` → optional bootstrap of the seeded incident (`AEGIS_BOOTSTRAP_DEMO`, default true in compose, idempotent) → uvicorn on :8000. HTTP healthcheck on `/api/health`. Published on `127.0.0.1:${BACKEND_PORT:-8000}` only. |
+| `frontend` | *(planned M12)* | nginx serving the SPA and proxying `/api` |
+
+The compose file passes only an explicit list of variables to the backend.
+`.env` is used for substitution and never copied into the image
+(`.dockerignore` excludes `.env`, `.aegis-tokens`, venvs, builds and data).
+Required variables (`POSTGRES_PASSWORD`, `AEGIS_API_TOKENS`) fail fast with
+a hint to run `make env`.
 
 Secrets come only from `.env` (git-ignored); `.env.example` documents variables.
 With no `ANTHROPIC_API_KEY`/`OPENAI_API_KEY`, `LLM_PROVIDER` falls back to `mock`.

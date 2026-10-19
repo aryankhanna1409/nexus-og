@@ -10,11 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M11 — Docker backend/db/redis** (depends on M10 ✅). The run stopped here
-because the usage limit was reached. Drafts for M11 (backend Dockerfile, entrypoint,
-bootstrap, docker-compose.yml, .dockerignore, scripts/init_env.py) exist only in the
-session scratchpad and were NOT committed; they must be recreated and verified.
-M12 (React dashboard) and M13 (make demo, E2E, README, final audit) are not started.
+Next milestone: **M12 — React dashboard** (depends on M11 ✅). Frontend sources are being written under `frontend/`.
 
 ## Milestones
 
@@ -29,8 +25,8 @@ M12 (React dashboard) and M13 (make demo, E2E, README, final audit) are not star
 | M7 LLM providers + RCA | done | PASS (real-provider calls not verified) | `6d4f4b0` |
 | M8 Reporting | done | PASS (PDF optional, not implemented) | `90232af` |
 | M9 DevSecOps agent | done | PASS (rollback simulated by design) | `77184fd` |
-| M10 Hardening + observability | done | PASS (OpenTelemetry not implemented) | (this commit; see git log) |
-| M11 Docker | not started (drafts not committed) | — | — |
+| M10 Hardening + observability | done | PASS (OpenTelemetry not implemented) | `08f26c3` |
+| M11 Docker | done | PASS (frontend service pending M12) | (this commit; see git log) |
 | M12 Dashboard | not started | — | — |
 | M13 Demo/E2E/audit | not started | — | — |
 
@@ -149,3 +145,16 @@ M12 (React dashboard) and M13 (make demo, E2E, README, final audit) are not star
 - Results: local 346 passed + 3 skipped, ASan 339 + 10 skipped, mypy clean.
   Container 3.12: 346 + 3 skipped. Live Redis 7.4.11: 1 passed.
 - Limitations: no OpenTelemetry/Grafana. `/metrics` is unauthenticated.
+
+### M11 — Docker backend and infrastructure
+
+- Implementation: `backend/Dockerfile` (C build + ctest stage, non-root
+  runtime), `docker-entrypoint.sh` (migrations, idempotent bootstrap),
+  `app/bootstrap.py`, `docker-compose.yml` (postgres, redis, backend; health
+  checks, volumes, localhost-only port), `.dockerignore`,
+  `scripts/init_env.py` (`make env`), `scripts/docker_smoke.sh`
+  (`make docker-smoke`).
+- Results: clean `--no-cache` smoke test passed end to end. Local 347 passed
+  + 3 skipped, ASan 340 + 10 skipped, mypy clean. Container 3.12: 347 + 3.
+- Defect fixed: pytest missing from the runtime image, which led the agent
+  to misdiagnose (see the plan log).

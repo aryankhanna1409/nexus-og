@@ -226,7 +226,7 @@ Rate limiting, request IDs, agent/incident IDs in log context, Prometheus metric
 input-size limits, security tests (authz bypass attempts, path traversal in
 report/log tools, injection strings).
 
-### M11 — Docker (backend, postgres, redis) `[ ]`
+### M11 — Docker (backend, postgres, redis) `[x]`
 
 Multi-stage backend image compiles the C library and runs its tests during build;
 migrations on start; healthchecks. Acceptance: `docker compose up --build` from a
@@ -294,7 +294,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R20 | 16 | REST API endpoints + OpenAPI | `app/api/` | M6–M9 | `tests/test_api_core.py` (M6 endpoints); RCA/report/agent endpoints pending | partial (M6 verified) |
 | R21 | 17 | PostgreSQL, migrations, relational tables + JSON evidence | `alembic/`, `app/models` | M6 | `test_sqlite_migration_*`, `test_postgres_migration_and_pipeline` (run against postgres:16) | verified |
 | R22 | 18 | Monorepo structure | repo | all | structure check in self-audit | in progress |
-| R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, Dockerfiles | M11, M12 | compose smoke test script | planned |
+| R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, `backend/Dockerfile` | M11, M12 | `scripts/docker_smoke.sh` (backend/postgres/redis verified; frontend pending M12) | partial (M11 verified) |
 | R24 | 20 | LLM provider abstraction, env config, no committed keys | `app/llm/` | M7 | `test_provider_selection`, Anthropic/OpenAI request-shape and error-mapping tests | verified offline; real API calls not executed (no key) |
 | R25 | 21 | Structured logs, request/agent/incident IDs, metrics, audit | `app/observability/`, `app/security/middleware.py` | M6, M10 | `tests/test_security.py` (logging/metrics tests) | verified (OpenTelemetry not implemented) |
 | R26 | 22 | C, Python, frontend, integration tests | all | every milestone, M13 | `make test` | planned |
@@ -542,6 +542,22 @@ Entries record commands actually executed and their outcome.
     stamped onto each record when created.
   - Mutation checks, all detected: no streamed-body limit, raw paths as
     metric labels, error details leaked in 500 responses.
+- 2026-10-19 — **M11** (Docker). `SMOKE_BUILD_ARGS=--no-cache scripts/docker_smoke.sh`:
+  a clean build (ctest 2/2 inside the image build) brought postgres:16,
+  redis:7 and the backend to healthy. Health reported db/C library ok; the
+  bootstrap created INC-2026-001; unauthenticated access returned 401; RCA
+  completed; a report was generated; the agent reached `apply_patch`
+  awaiting approval; the audit chain was valid. Teardown left no containers
+  or volumes.
+  - Defect found by the first smoke run: pytest was missing from the
+    runtime image, so the agent's test tool could not run, and the planner
+    then misattributed the failure ("last commit does not touch failing
+    code"). Fixes: pytest moved to runtime requirements; the planner
+    escalates test runs without identifiable failures (new regression test);
+    the smoke test now asserts the approval step.
+  - Regression after the fixes: `make test` exit 0 (**347 passed, 3 skipped**;
+    ASan 340 + 10 skipped; mypy clean, 86 files). Container Python 3.12:
+    **347 passed, 3 skipped**.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

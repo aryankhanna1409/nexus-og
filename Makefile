@@ -11,6 +11,8 @@ VENV_PY      := $(VENV)/bin/python
 VENV_STAMP   := $(VENV)/.requirements-installed
 SEED         ?= 42
 
+
+.PHONY: env docker-build docker-up docker-down docker-smoke
 .PHONY: help c-build c-test c-test-asan py-venv py-test py-test-asan py-typecheck call-logs network-data container-test test clean
 
 help:
@@ -25,6 +27,10 @@ help:
 	@echo "  call-logs     Generate data/call_logs/call_logs.csv (SEED=$(SEED))"
 	@echo "  network-data  Simulate the seeded incident into data/ (telemetry, events, CDRs)"
 	@echo "  container-test  Run C + Python tests in a python:3.12-slim container"
+	@echo "  env           Create .env with generated tokens/passwords (never overwrites)"
+	@echo "  docker-up     docker compose up --build -d"
+	@echo "  docker-smoke  Build, start and smoke-test the Docker stack, then stop it"
+	@echo "  docker-down   Stop the stack (keeps volumes)"
 	@echo "  test          Run all available test suites"
 	@echo "  clean         Remove build artifacts and caches"
 
@@ -73,6 +79,21 @@ call-logs:
 
 network-data: py-venv
 	$(VENV_PY) scripts/generate_network_metrics.py --scenario seeded --seed 7 --out-dir data
+
+env:
+	$(PYTHON) scripts/init_env.py
+
+docker-build:
+	docker compose build
+
+docker-up:
+	docker compose up --build -d
+
+docker-down:
+	docker compose down
+
+docker-smoke:
+	scripts/docker_smoke.sh
 
 container-test:
 	scripts/container_py312_test.sh

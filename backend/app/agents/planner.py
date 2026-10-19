@@ -87,6 +87,10 @@ def _failed_ci(run: AgentRun, history: list[AgentActionRecord]) -> PlannedAction
         return PlannedAction("OBSERVE", "run_unit_tests", {}, "Reproduce the CI result locally in the sandbox.")
     if tests[0].result.get("passed"):
         return _closing(history, "Tests pass; nothing to fix.")
+    if not tests[0].result.get("failed_tests"):
+        return _closing(history, f"The test run failed (exit code {tests[0].result.get('returncode')}) without "
+                                 "reporting failing tests, so the failure cannot be attributed to a change "
+                                 "(likely an environment or collection error); escalate to a human.")
     if not _last(history, "inspect_logs"):
         return PlannedAction("OBSERVE", "inspect_logs", {"source": "ci"}, "Identify the failing tests from the CI log.")
     diff = _last(history, "inspect_git_diff")

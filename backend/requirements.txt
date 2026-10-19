@@ -9,6 +9,8 @@ alembic==1.20.0
 psycopg[binary]==3.3.6
 Jinja2==3.1.6
 MarkupSafe==3.0.4
+# pytest and pyflakes are runtime dependencies: the DevSecOps agent runs them in its sandbox.
+pytest==9.1.1
 pyflakes==4.0.3
 prometheus_client==0.26.0
 redis==8.1.0

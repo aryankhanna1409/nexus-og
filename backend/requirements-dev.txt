@@ -1,5 +1,4 @@
 -r requirements.txt
 -r requirements-llm.txt
-pytest==9.1.1
 mypy==2.4.0
 httpx==0.28.1

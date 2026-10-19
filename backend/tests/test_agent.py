@@ -315,3 +315,18 @@ def test_agent_api_validation_and_status(api: ApiHarness) -> None:
     status = api.get("/api/agent/status").json()  # type: ignore[attr-defined]
     assert status["policy"]["tools"]["delete_infrastructure"] == "BLOCKED"
     assert status["policy"]["allow_high_risk"] is False
+
+
+def test_failed_ci_without_identifiable_failures_escalates(api: ApiHarness, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A broken test environment (e.g. pytest missing) must not be misdiagnosed as a code change."""
+    from app.agents import tools as agent_tools
+
+    def broken(ctx: Any) -> dict[str, Any]:
+        return {"passed": False, "returncode": 1, "timed_out": False, "counts": {}, "failed_tests": [],
+                "output_tail": "No module named pytest"}
+
+    monkeypatch.setattr(agent_tools, "_pytest", broken)
+    run = api.post("/api/agent/investigate", json={"scenario": "failed_ci"}).json()  # type: ignore[attr-defined]
+    assert run["status"] == "completed"
+    assert [a["tool"] for a in run["actions"]] == ["run_unit_tests", "generate_report"]
+    assert "cannot be attributed" in run["actions"][-1]["rationale"]

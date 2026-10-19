@@ -28,7 +28,7 @@ All milestones M1–M13 are complete. See the final self-audit in `IMPLEMENTATIO
 | M10 Hardening + observability | done | PASS (OpenTelemetry not implemented) | `08f26c3` |
 | M11 Docker | done | PASS | `3ace7ba` |
 | M12 Dashboard | done | PASS | `0efbbbe` |
-| M13 Demo/E2E/audit | done | PASS WITH DOCUMENTED LIMITATIONS | (this commit; see git log) |
+| M13 Demo/E2E/audit | done | PASS WITH DOCUMENTED LIMITATIONS | `0b8e307` |
 
 ### M3 — Network telemetry simulation and seeded incidents
 

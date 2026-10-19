@@ -302,7 +302,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R28 | 24 | Seeded memory-leak deployment incident + evidence chain | simulator, analytics, RCA, agent | M3–M9, M13 | `test_ordered_degradation_chain`, `test_seeded_*` (M4/M5), `test_mock_rca_on_seeded_incident`, `test_production_anomaly_rollback_and_recovery`, `test_data_to_analytics_to_incident_to_rca_to_report` | verified (rollback simulated) |
 | R29 | 26 | Explainability chain without hidden chain-of-thought | `app/rca/`, `app/api/rca.py`, `RcaPanel` | M7, M12 | `test_investigate_endpoint` (explanation keys), `RcaPanel` component test, browser check of `/rca` | verified |
 | R30 | 27 | AuthN, RBAC, approvals, rate limiting, safe subprocess, no LLM shell | `app/security/`, `app/agents/` | M6, M9, M10 | `test_role_matrix`, `test_tokens_only_accepted_as_bearer_header`, `test_rate_limit`, `test_runner_never_uses_a_shell`, `test_runner_rejects_non_allowlisted_commands`, agent gate tests + 6 mutation checks | verified |
-| R31 | 28 | README with 16 sections + Mermaid; docs/ | `README.md`, `docs/` | M13 | self-audit: 16 numbered sections, 4 Mermaid diagrams; `docs/{architecture,api,agent,rca,security}.md` | verified |
+| R31 | 28 | README with 16 sections + Mermaid; docs/ | `README.md`, `docs/` | M13 | self-audit: 16 numbered sections, 3 Mermaid diagrams; `docs/{architecture,api,agent,rca,security}.md` | verified |
 | R32 | 31 | `make test`, `make demo`, `make clean`; self-audit | `Makefile` | M13 | all three executed in the final sweep (exit 0); self-audit below | verified |
 
 ---
@@ -606,7 +606,7 @@ Entries record commands actually executed and their outcome.
     30 min".
 - 2026-10-19 — **M13** (demo, E2E, docs, final audit). New: `scripts/demo.py`
   (`make demo`), `backend/tests/test_e2e.py` (3 tests), README (16
-  sections, 4 Mermaid diagrams), `docs/*.md`, `tests/README.md`. The demo
+  sections, 3 Mermaid diagrams), `docs/*.md`, `tests/README.md`. The demo
   exposed a defect: after a rollback the incident window still ended at the
   end of the un-remediated data. The incident now ends when the last
   post-rollback anomaly ends (regression assertion added).

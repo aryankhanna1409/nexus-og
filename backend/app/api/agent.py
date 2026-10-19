@@ -32,7 +32,7 @@ class ApprovalRequest(RequestModel):
 
 
 def _deps(request: Request, session: SessionDep, settings: SettingsDep) -> AgentDeps:
-    return AgentDeps(session, settings, request.app.state.llm)
+    return AgentDeps(session, settings, request.app.state.llm, request.app.state.metrics)
 
 
 def _run_view(deps: AgentDeps, run: AgentRun) -> dict[str, Any]:

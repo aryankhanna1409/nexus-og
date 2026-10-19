@@ -220,7 +220,7 @@ Acceptance: scenario tests reach expected end state; `REQUIRES_APPROVAL`/`HIGH_R
 actions never execute before approval; `BLOCKED` never executes; LLM-proposed
 free-text commands are rejected; every action has a rationale and an audit row.
 
-### M10 — Security hardening and observability `[ ]`
+### M10 — Security hardening and observability `[x]`
 
 Rate limiting, request IDs, agent/incident IDs in log context, Prometheus metrics,
 input-size limits, security tests (authz bypass attempts, path traversal in
@@ -296,7 +296,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R22 | 18 | Monorepo structure | repo | all | structure check in self-audit | in progress |
 | R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, Dockerfiles | M11, M12 | compose smoke test script | planned |
 | R24 | 20 | LLM provider abstraction, env config, no committed keys | `app/llm/` | M7 | `test_provider_selection`, Anthropic/OpenAI request-shape and error-mapping tests | verified offline; real API calls not executed (no key) |
-| R25 | 21 | Structured logs, request/agent/incident IDs, metrics, audit | `app/observability/` | M6, M10 | `test_observability.py` | planned |
+| R25 | 21 | Structured logs, request/agent/incident IDs, metrics, audit | `app/observability/`, `app/security/middleware.py` | M6, M10 | `tests/test_security.py` (logging/metrics tests) | verified (OpenTelemetry not implemented) |
 | R26 | 22 | C, Python, frontend, integration tests | all | every milestone, M13 | `make test` | planned |
 | R27 | 23 | `make demo` offline with mock provider, 13 steps | `scripts/`, `Makefile` | M13 | `test_demo_e2e.py` + manual run | planned |
 | R28 | 24 | Seeded memory-leak deployment incident + evidence chain | M3 simulator, M5, M7 | M3, M5, M7 | M3 part: `test_ordered_degradation_chain`, `test_rollback_restores_counterfactual_baseline`; e2e later | partial (M3 verified) |
@@ -532,6 +532,16 @@ Entries record commands actually executed and their outcome.
   - The rollback is a simulation (re-simulated telemetry, no
     infrastructure). Recovery verified: the seeded scenario's KPIs returned
     within the M4 practical deltas, with no open anomalies.
+- 2026-10-19 — **M10** (hardening, observability). Local Python 3.14: `make test`
+  exit 0. pytest **346 passed, 3 skipped** (PostgreSQL, live LLM, live Redis —
+  all opt-in); ASan run 339 + 10 skipped; mypy clean (85 files). Container
+  Python 3.12: **346 passed, 3 skipped**. The live Redis test was run
+  separately against `redis:7` (7.4.11): 1 passed.
+  - Defect found and fixed: log context (request/incident/agent-run ids) was
+    read at format time, so it was lost by deferred formatting. It is now
+    stamped onto each record when created.
+  - Mutation checks, all detected: no streamed-body limit, raw paths as
+    metric labels, error details leaked in 500 responses.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

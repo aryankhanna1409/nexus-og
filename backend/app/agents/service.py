@@ -27,12 +27,16 @@ from app.agents.workspace import WorkspaceError, create_workspace
 from app.config import Role, Settings
 from app.llm.factory import ProviderChoice
 from app.models import AgentActionRecord, AgentRun, IncidentRecord
+from app.observability.context import agent_run_id_var, incident_id_var
+from app.observability.logging import get_logger
+from app.observability.metrics import Metrics
 from app.security.audit import record_audit
 from app.security.tokens import Principal
 
 SCENARIOS = ("vulnerable_dependency", "failed_ci", "production_anomaly")
 PHASES = ("OBSERVE", "ANALYZE", "PLAN", "ACT", "VERIFY", "CLOSE")
 MAX_ACTIONS_PER_RUN = 40
+log = get_logger("agent")
 
 
 class AgentError(Exception):
@@ -48,6 +52,11 @@ class AgentDeps:
     session: Session
     settings: Settings
     llm: ProviderChoice
+    metrics: Metrics | None = None
+
+    def count(self, tool: str, status: str) -> None:
+        if self.metrics is not None:
+            self.metrics.agent_actions.labels(tool, status).inc()
 
 
 def _audit(deps: AgentDeps, actor: str, role: str, action: str, resource: str, outcome: str = "success",
@@ -87,6 +96,9 @@ def _execute(deps: AgentDeps, run: AgentRun, action: AgentActionRecord, executor
     except (AgentToolError, CommandNotAllowed, WorkspaceError, ValidationError, ValueError) as exc:
         action.status = "failed"
         action.result = {"error": str(exc)[:2000]}
+    deps.count(action.tool, action.status)
+    log.info("agent action", extra={"action_id": action.action_id, "tool": action.tool,
+                                    "status": action.status, "risk_class": action.risk_class})
     _audit(deps, executor, executor_role_name, f"agent.action.{action.status}", action.action_id,
            tool=action.tool, risk_class=action.risk_class, run_id=run.run_id,
            outcome_summary={k: v for k, v in action.result.items() if k in ("error", "passed", "recovered",
@@ -109,6 +121,8 @@ def _propose(deps: AgentDeps, run: AgentRun, planned: PlannedAction, sequence: i
            arguments=planned.arguments)
     if decision.decision is Decision.DENY:
         action.status = "blocked"
+        deps.count(planned.tool, "blocked")
+        log.warning("agent action blocked by policy", extra={"action_id": action.action_id, "tool": planned.tool})
         _audit(deps, "policy-engine", "system", "agent.action.blocked", action.action_id, outcome="denied",
                tool=planned.tool, reason=decision.reason)
     elif decision.decision is Decision.NEEDS_APPROVAL:
@@ -118,6 +132,16 @@ def _propose(deps: AgentDeps, run: AgentRun, planned: PlannedAction, sequence: i
 
 def advance(deps: AgentDeps, run: AgentRun) -> AgentRun:
     """Proposes and auto-executes actions until approval is needed or the run closes."""
+    run_token = agent_run_id_var.set(run.run_id)
+    incident_token = incident_id_var.set(run.incident_id)
+    try:
+        return _advance(deps, run)
+    finally:
+        agent_run_id_var.reset(run_token)
+        incident_id_var.reset(incident_token)
+
+
+def _advance(deps: AgentDeps, run: AgentRun) -> AgentRun:
     for _ in range(MAX_ACTIONS_PER_RUN):
         history = _history(deps, run)
         if any(a.status in ("awaiting_approval", "approved") for a in history):

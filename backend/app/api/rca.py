@@ -12,11 +12,14 @@ from app.api.deps import Operator, SessionDep, Viewer
 from app.api.incidents import INCIDENT_ID, get_incident_or_404
 from app.llm.factory import ProviderChoice
 from app.models import IncidentEventRecord, RecommendationRecord, RootCauseAnalysisRecord
+from app.observability.context import incident_id_var
+from app.observability.logging import get_logger
 from app.schemas.entities import Recommendation, RootCauseAnalysis
 from app.security.audit import record_audit
 from app.services.rca import run_rca
 
 router = APIRouter(prefix="/api/incidents", tags=["rca"])
+log = get_logger("rca")
 
 
 def rca_response(session: Session, record: RootCauseAnalysisRecord, choice: ProviderChoice | None = None
@@ -55,7 +58,15 @@ def investigate_incident(request: Request, session: SessionDep, principal: Opera
                          incident_id: str = Path(..., pattern=INCIDENT_ID)) -> dict[str, Any]:
     incident = get_incident_or_404(session, incident_id)
     choice: ProviderChoice = request.app.state.llm
-    outcome = run_rca(session, incident, choice, actor=f"user:{principal.name}")
+    token = incident_id_var.set(incident_id)
+    try:
+        outcome = run_rca(session, incident, choice, actor=f"user:{principal.name}")
+        log.info("rca completed", extra={"status": outcome.record.status, "provider": outcome.record.provider,
+                                         "steps": outcome.record.steps,
+                                         "tool_calls": len(outcome.result.tool_calls)})
+    finally:
+        incident_id_var.reset(token)
+    request.app.state.metrics.rca_runs.labels(outcome.record.provider, outcome.record.status).inc()
     record_audit(session, actor=principal.name, role=principal.role.name.lower(), action="rca.investigate",
                  resource_type="incident", resource_id=incident_id,
                  outcome="success" if outcome.record.status == "completed" else "failure",

@@ -10,7 +10,11 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M10 — Security hardening and observability** (depends on M8 ✅, M9 ✅).
+Next milestone: **M11 — Docker backend/db/redis** (depends on M10 ✅). The run stopped here
+because the usage limit was reached. Drafts for M11 (backend Dockerfile, entrypoint,
+bootstrap, docker-compose.yml, .dockerignore, scripts/init_env.py) exist only in the
+session scratchpad and were NOT committed; they must be recreated and verified.
+M12 (React dashboard) and M13 (make demo, E2E, README, final audit) are not started.
 
 ## Milestones
 
@@ -24,7 +28,11 @@ Next milestone: **M10 — Security hardening and observability** (depends on M8 
 | M6 Persistence/API/auth/audit | done | PASS | `c5881b6` (+ `a18b27c` whitespace fix) |
 | M7 LLM providers + RCA | done | PASS (real-provider calls not verified) | `6d4f4b0` |
 | M8 Reporting | done | PASS (PDF optional, not implemented) | `90232af` |
-| M9 DevSecOps agent | done | PASS (rollback simulated by design) | (this commit; see git log) |
+| M9 DevSecOps agent | done | PASS (rollback simulated by design) | `77184fd` |
+| M10 Hardening + observability | done | PASS (OpenTelemetry not implemented) | (this commit; see git log) |
+| M11 Docker | not started (drafts not committed) | — | — |
+| M12 Dashboard | not started | — | — |
+| M13 Demo/E2E/audit | not started | — | — |
 
 ### M3 — Network telemetry simulation and seeded incidents
 
@@ -131,3 +139,13 @@ Next milestone: **M10 — Security hardening and observability** (depends on M8 
 - Limitations: playbooks are deterministic (the LLM only influences RCA
   output); `restart_service` is registered but not modelled (always fails
   with an explanation); patch generation is revert-based only.
+
+### M10 — Security hardening and observability
+
+- Implementation: ASGI middleware (request id/access log/metrics/500 handler,
+  security headers, body-size limit incl. streamed bodies, Redis/in-memory
+  rate limiting), JSON logging with context stamping, Prometheus `/metrics`,
+  RCA/agent log context and counters, `tests/test_security.py`.
+- Results: local 346 passed + 3 skipped, ASan 339 + 10 skipped, mypy clean.
+  Container 3.12: 346 + 3 skipped. Live Redis 7.4.11: 1 passed.
+- Limitations: no OpenTelemetry/Grafana. `/metrics` is unauthenticated.

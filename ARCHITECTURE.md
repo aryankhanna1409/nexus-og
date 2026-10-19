@@ -602,6 +602,56 @@ Audit log: append-only. Each row's SHA-256 covers its content and the previous
 row's hash; on PostgreSQL appends are serialised with an advisory lock.
 `verify_chain` detects modified or removed rows.
 
+### 3.7a Hardening and observability (`app/security/middleware.py`, `app/observability/`) — implemented (M10)
+
+ASGI middleware, outermost first:
+
+1. `RequestContextMiddleware` handles request IDs, access logs, metrics and
+   errors. It echoes a valid `X-Request-ID` or generates one, and writes a
+   JSON access-log line (method, route *template*, status, duration,
+   actor). It updates Prometheus counters and histograms, and converts
+   unhandled exceptions into `500 {"detail": "internal server error",
+   "request_id"}` with no internals.
+2. `SecurityHeadersMiddleware` adds `nosniff`, `X-Frame-Options: DENY` and
+   `Referrer-Policy: no-referrer`. `/api/*` responses also get
+   `Cache-Control: no-store` and `CSP: default-src 'none'` unless already
+   set.
+3. `BodySizeLimitMiddleware` returns 413 when `Content-Length` exceeds
+   `AEGIS_MAX_REQUEST_BYTES` (default 1 MB), or when a streamed or chunked
+   body grows past it.
+4. `RateLimitMiddleware` applies a fixed per-minute window keyed by a SHA-256
+   prefix of the Authorization header, or by client IP when absent
+   (`AEGIS_RATE_LIMIT_PER_MINUTE`, default 120; the Docker stack uses 600).
+   It returns 429 with `Retry-After`. `/api/health` and `/metrics` are
+   exempt.
+   - **Backend:** Redis when `REDIS_URL` is set. On Redis errors it falls
+     back to an in-process limiter and logs, so it neither fails open nor
+     returns errors.
+   - **Verification:** tested against a live `redis:7` (7.4.11) via the
+     opt-in `AEGIS_TEST_REDIS_URL` test.
+
+**Logging:** JSON lines on logger `aegis`. A log-record factory stamps
+`request_id`, `incident_id` and `agent_run_id` (context variables set by
+the request middleware, the RCA endpoint and the agent run loop) onto every
+record when it is created, so deferred formatting keeps them. Tokens and
+API keys are never logged (tested).
+
+**Metrics:** `/metrics` (Prometheus text format, one registry per app) exposes:
+- `aegis_http_requests_total{method,route,status}`;
+- `aegis_http_request_duration_seconds`;
+- `aegis_http_errors_total`, `aegis_rate_limited_total`;
+- `aegis_agent_actions_total{tool,status}`, `aegis_rca_runs_total{provider,status}`.
+
+Route labels use templates (bounded cardinality). `/metrics` is
+unauthenticated but contains no identifiers or secrets. In Docker it is not
+exposed through the frontend proxy.
+
+Tokens are accepted only as `Authorization: Bearer` (not from query
+strings, cookies, `Basic` or other headers). Method-override headers are
+ignored. Injection- and traversal-shaped parameters are rejected by
+pattern validation (tests cover SQL fragments, `<script>`, `../`, encoded
+`..` and NUL). OpenTelemetry (optional in spec §21) is not implemented.
+
 ### 3.8 Frontend — *(planned M12)*
 
 React/TS SPA served by nginx; talks only to the REST API through a typed

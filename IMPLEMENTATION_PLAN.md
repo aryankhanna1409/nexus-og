@@ -175,7 +175,7 @@ Acceptance: seeded scenario yields exactly one incident containing the deploymen
 as the earliest event and the six symptoms; unrelated noise anomalies are not
 merged; two separate incidents in one dataset stay separate.
 
-### M6 — Persistence, API core, auth and audit `[ ]`
+### M6 — Persistence, API core, auth and audit `[x]`
 
 Scope: `backend/app/{models,schemas,api,services,security}`, Alembic migrations,
 FastAPI app with OpenAPI. Tables for all spec §15 entities. Read endpoints for
@@ -290,9 +290,9 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R16 | 12 | Action risk classes, approval gating, rationale, logging | `app/agents/policy.py` | M9 | `test_agent_policy.py` | planned |
 | R17 | 13, 25 | Dashboard pages, KPI cards, charts, NOC aesthetic | `frontend/` | M12 | Vitest component tests + manual check | planned |
 | R18 | 14 | Interactive incident timeline | `frontend/`, `IncidentEvent` API | M12 | `Timeline.test.tsx`, API test | planned |
-| R19 | 15 | Schemas for 11 entities, Pydantic at API | `app/models`, `app/schemas` | M6 | `test_schemas.py` | planned |
-| R20 | 16 | REST API endpoints + OpenAPI | `app/api/` | M6–M9 | `test_api_*.py`, OpenAPI snapshot | planned |
-| R21 | 17 | PostgreSQL, migrations, relational tables + JSON evidence | `alembic/` | M6 | `test_migrations.py` (Postgres + SQLite) | planned |
+| R19 | 15 | Schemas for 11 entities, Pydantic at API | `app/models`, `app/schemas/entities.py` | M6 | `tests/test_api_core.py` (responses validated through the schemas) | verified |
+| R20 | 16 | REST API endpoints + OpenAPI | `app/api/` | M6–M9 | `tests/test_api_core.py` (M6 endpoints); RCA/report/agent endpoints pending | partial (M6 verified) |
+| R21 | 17 | PostgreSQL, migrations, relational tables + JSON evidence | `alembic/`, `app/models` | M6 | `test_sqlite_migration_*`, `test_postgres_migration_and_pipeline` (run against postgres:16) | verified |
 | R22 | 18 | Monorepo structure | repo | all | structure check in self-audit | in progress |
 | R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, Dockerfiles | M11, M12 | compose smoke test script | planned |
 | R24 | 20 | LLM provider abstraction, env config, no committed keys | `app/llm/` | M7 | `test_llm_providers.py`, secret scan | planned |
@@ -475,6 +475,19 @@ Entries record commands actually executed and their outcome.
     under the corrected rule.
   - Mutation checks (scratch copy), all detected: ignoring topology
     (6 tests failed), merging across nodes (1), removing temporal decay (1).
+- 2026-10-19 — **M6** (persistence, API, auth, audit). Local Python 3.14: pytest
+  **235 passed, 1 skipped** (the PostgreSQL test needs `AEGIS_TEST_POSTGRES_URL`);
+  ASan run 228 passed + 8 skipped; C 2/2 + 2/2; mypy clean (54 files).
+  PostgreSQL: the skipped test was run separately against `postgres:16`
+  (16.15) in a localhost-only container: **1 passed**. It covered downgrade,
+  upgrade and `alembic check` (no drift), pipeline (73,440 metric rows),
+  incident API, audit-chain verify, and JSON columns as `jsonb`. Container
+  Python 3.12: **235 passed, 1 skipped**, mypy clean.
+  - Process note: the first combined run reported 2 mypy errors from M7
+    files written in parallel (SDKs not installed). M6 was re-verified on a
+    tree without the M7 files before committing.
+  - Known warning: Starlette's TestClient warns that it prefers `httpx2`
+    over `httpx`. Tests are unaffected.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

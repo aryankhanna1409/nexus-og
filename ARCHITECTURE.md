@@ -401,21 +401,61 @@ a command string. Every proposed action is stored as an `AgentAction` with
 or denied) and audit rows. Execution happens in a disposable copy of
 `demo-workspace/`.
 
-### 3.6 Database — *(planned M6)*
+### 3.6 Database (`backend/app/models/`, `backend/alembic/`) — implemented (M6)
 
-Relational tables: `call_records` (optional bulk import), `call_analysis_runs`,
-`network_metrics` (metric, cell_id, ts, value; indexed on (metric, cell_id, ts)),
-`anomalies`, `incidents`, `incident_events`, `root_cause_analyses`,
-`recommendations`, `agent_actions`, `security_findings`, `deployments`,
-`reports`, `audit_logs`. JSON columns only for `evidence`, `tool_outputs`,
-`report_payload`, `action_args`.
+SQLAlchemy 2 ORM + Alembic (`0001_initial_schema`). The same migration runs
+on SQLite (offline demo, tests) and PostgreSQL 16 (Docker). That was verified
+against a real `postgres:16` container: upgrade → `alembic check` (no drift)
+→ pipeline → API. Timestamps are UTC epoch seconds (`*_epoch`, BigInteger).
 
-### 3.7 REST API — *(planned M6–M10)*
+| Table | Key relational columns | JSON (evidence/documents only) |
+|---|---|---|
+| `pipeline_runs` | scenario, seed, status, data window, fingerprint | params |
+| `network_metrics` | run_id, epoch, cell_id, node_id, metric, value (index run/metric/cell/epoch) | — |
+| `anomalies` | anomaly_id, run_id, metric, cell/node, start/end, value, baseline, severity, score | detectors, related_metrics |
+| `call_analysis_runs` | totals and rates from libcallanalyzer | failure_codes, time_windows, suspicious windows, parse_report |
+| `call_cell_statistics`, `call_anomalies` | per-cell stats; C anomalies (type, severity, subject, window, value, z, score) | — |
+| `operational_events`, `deployments` | type/time/node/cell; service, versions, status, rollback time | attributes |
+| `incidents` (+ `incident_cells`, `incident_anomalies`, `incident_events`) | severity, status, window, confidence, top cause, resolved time; cell/node and anomaly links; timeline rows | symptoms, suspected_causes, excluded_candidates, call_evidence, causal_chain, caveats |
+| `root_cause_analyses`, `recommendations`, `reports` | provider/model/status/root cause/confidence; action, risk class, tool | facts, inferences, hypotheses, evidence, tool_calls; report payload |
+| `agent_runs`, `agent_actions`, `security_findings` | state/status; tool, risk class, status, approver/executor and times; severity/status | arguments, result, details |
+| `audit_logs` | epoch, actor, role, action, resource, outcome, request_id, prev_hash, hash | details |
 
-Endpoints of spec §16 under `/api`, OpenAPI at `/docs`. Auth: `Authorization:
-Bearer <token>`. Role requirements: `viewer` for GET, `operator` for
-investigate/report generation, `approver` for approve, `admin` for HIGH_RISK
-execution. All mutating endpoints write `audit_logs`.
+Analytics identifiers are deterministic per scenario, so stored ids are made
+run-scoped (`R<run>-ANOM-…`, `R<run>-EVT-…`, `R<run>-DEP-…`). Incident ids are
+allocated globally in sequence (`INC-2026-001`, `INC-2026-002`, …).
+
+### 3.7 REST API (`backend/app/api/`, `backend/app/main.py`) — implemented M6 (core)
+
+Auth:
+- `Authorization: Bearer <token>`. Tokens are configured only as SHA-256
+  hashes in `AEGIS_API_TOKENS` (`name:role:hash`; `scripts/hash_token.py`)
+  and compared in constant time.
+- Roles are ordered: viewer < operator < approver < admin.
+- 401 and 403 responses are written to the audit log (`auth.denied`,
+  `auth.forbidden`).
+
+| Endpoint | Role |
+|---|---|
+| `GET /api/health` (status, db, C library, provider; no secrets) | public |
+| `POST /api/pipeline/run` (`{scenario: seeded\|healthy, seed, minutes, rollback_minute}`), `GET /api/pipeline/runs` | operator / viewer |
+| `GET /api/calls/statistics`, `GET /api/calls/anomalies` (`?run_id`, default latest run) | viewer |
+| `GET /api/network/metrics?metric=&cell_id=&start=&end=&run_id=`, `GET /api/network/anomalies?cell_id=&metric=&severity=` | viewer |
+| `GET /api/incidents?status=&severity=`, `GET /api/incidents/{id}` (detail with timeline, cells, anomaly ids) | viewer |
+| `GET /api/deployments`, `GET /api/security/findings` | viewer |
+| `GET /api/audit?action=&limit=&offset=` | operator |
+| `GET /api/audit/verify` (hash-chain check) | admin |
+
+Request bodies use `extra="forbid"`. Query parameters are pattern- or
+range-validated (metric names, cell ids, incident ids, severities, limits
+≤ 1000). Every response carries `X-Request-ID` (a valid incoming value is
+echoed, otherwise one is generated), and it is stored in audit rows. OpenAPI
+is served at `/openapi.json` and `/docs`. RCA, report and agent endpoints are
+added in M7–M9.
+
+Audit log: append-only. Each row's SHA-256 covers its content and the previous
+row's hash; on PostgreSQL appends are serialised with an advisory lock.
+`verify_chain` detects modified or removed rows.
 
 ### 3.8 Frontend — *(planned M12)*
 

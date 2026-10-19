@@ -10,7 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M6 — Persistence, API core, auth and audit** (depends on M5 ✅).
+Next milestone: **M7 — LLM abstraction + RCA engine** (depends on M6 ✅).
 
 ## Milestones
 
@@ -20,7 +20,8 @@ Next milestone: **M6 — Persistence, API core, auth and audit** (depends on M5 
 | M2 Python binding + generator | done before this run | PASS WITH DOCUMENTED LIMITATIONS | `7b748a2` |
 | M3 Telemetry simulator | done | PASS | `7d1edf6` |
 | M4 Anomaly detection | done | PASS | `8172e7c` |
-| M5 Correlation engine | done | PASS | (this commit; see git log) |
+| M5 Correlation engine | done | PASS | `c4a7d85` |
+| M6 Persistence/API/auth/audit | done | PASS | (this commit; see git log) |
 
 ### M3 — Network telemetry simulation and seeded incidents
 
@@ -68,3 +69,18 @@ Next milestone: **M6 — Persistence, API core, auth and audit** (depends on M5 
   onset would merge into one incident.
 - Note: the working tree shows the stray `tatus --short` file deleted. That
   deletion was not made by this run and is left unstaged.
+
+### M6 — Persistence, API, authentication and audit
+
+- Implementation: SQLAlchemy models (19 tables), Alembic `0001`, FastAPI app
+  factory with 13 endpoints, bearer-token RBAC (hashed tokens), hash-chained
+  audit log, request IDs, pipeline service, `scripts/hash_token.py`,
+  `.env.example`.
+- Commands: `make test`; `scripts/container_py312_test.sh`; PostgreSQL run
+  (`docker run postgres:16` on 127.0.0.1:55432, then the test with
+  `AEGIS_TEST_POSTGRES_URL`).
+- Results: local 235 passed + 1 skipped (PostgreSQL), ASan 228 + 8 skipped,
+  mypy clean. PostgreSQL test 1 passed. Container 3.12: 235 passed + 1 skipped.
+- Limitations: pipeline runs synchronously in the request (~3–5 s).
+  Unauthenticated requests write audit rows, so flooding is a DoS vector
+  until M10 rate limiting. TestClient deprecation warning (httpx2).

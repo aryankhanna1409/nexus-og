@@ -186,7 +186,7 @@ Acceptance: `alembic upgrade head` succeeds on Postgres (container) and SQLite;
 endpoint tests via `httpx`/TestClient with role matrix (401/403/200);
 pipeline ingest stores incidents and they are returned by the API.
 
-### M7 — LLM abstraction and RCA engine `[ ]`
+### M7 — LLM abstraction and RCA engine `[x]`
 
 Scope: `backend/app/rca/`, `backend/app/llm/`. `LLMProvider` (`generate`,
 `tool_call`), providers: mock/anthropic/openai/local. Read-only RCA tool registry
@@ -283,7 +283,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R9 | 6 | Interpretable anomaly detectors + anomaly schema | `app/analytics/` | M4 | `tests/test_analytics.py` (24 tests) | verified |
 | R10 | 6 | Optional ML detectors (Isolation Forest/DBSCAN) | `app/analytics/` | deferred | — | deferred (optional) |
 | R11 | 7 | Cross-source correlation → Incident object | `app/analytics/correlation.py` | M5 | `tests/test_correlation.py` (29 tests) | verified |
-| R12 | 8 | LLM RCA with structured tools; facts vs hypotheses | `app/rca/`, `app/llm/` | M7 | `test_rca_engine.py`, `test_rca_tools.py`, `test_rca_schema.py` | planned |
+| R12 | 8 | LLM RCA with structured tools; facts vs hypotheses | `app/rca/`, `app/llm/` | M7 | `tests/test_rca.py` (44 tests; live-provider test opt-in, not run) | verified (mock + fake SDK clients) |
 | R13 | 9 | AI report (JSON/Markdown/HTML; PDF optional) | `app/reporting/` | M8 | `test_reporting.py` | planned |
 | R14 | 10 | Agent tools + OBSERVE…CLOSE loop | `app/agents/` | M9 | `test_agent_loop.py` | planned |
 | R15 | 11 | Scenarios: vulnerable dependency, failed CI, production anomaly | `app/agents/scenarios/` | M9 | `test_agent_scenarios.py` | planned |
@@ -295,7 +295,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R21 | 17 | PostgreSQL, migrations, relational tables + JSON evidence | `alembic/`, `app/models` | M6 | `test_sqlite_migration_*`, `test_postgres_migration_and_pipeline` (run against postgres:16) | verified |
 | R22 | 18 | Monorepo structure | repo | all | structure check in self-audit | in progress |
 | R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, Dockerfiles | M11, M12 | compose smoke test script | planned |
-| R24 | 20 | LLM provider abstraction, env config, no committed keys | `app/llm/` | M7 | `test_llm_providers.py`, secret scan | planned |
+| R24 | 20 | LLM provider abstraction, env config, no committed keys | `app/llm/` | M7 | `test_provider_selection`, Anthropic/OpenAI request-shape and error-mapping tests | verified offline; real API calls not executed (no key) |
 | R25 | 21 | Structured logs, request/agent/incident IDs, metrics, audit | `app/observability/` | M6, M10 | `test_observability.py` | planned |
 | R26 | 22 | C, Python, frontend, integration tests | all | every milestone, M13 | `make test` | planned |
 | R27 | 23 | `make demo` offline with mock provider, 13 steps | `scripts/`, `Makefile` | M13 | `test_demo_e2e.py` + manual run | planned |
@@ -488,6 +488,25 @@ Entries record commands actually executed and their outcome.
     tree without the M7 files before committing.
   - Known warning: Starlette's TestClient warns that it prefers `httpx2`
     over `httpx`. Tests are unaffected.
+- 2026-10-19 — **M7** (LLM providers, RCA). Local Python 3.14: `make test`
+  exit 0. pytest **279 passed, 2 skipped** (PostgreSQL; live Anthropic — no
+  key, opt-in); ASan run 272 passed + 9 skipped; mypy clean (67 files).
+  Container Python 3.12: **279 passed, 2 skipped**, mypy clean.
+  - The `claude-api` skill was consulted before writing the Anthropic
+    provider. Request kwargs were checked against the installed SDK
+    signatures (anthropic 1.15.0: `beta.messages.create` accepts `betas`,
+    `fallbacks: Iterable | Literal['default']`, `output_config`, `tools`;
+    openai 3.35.1: `chat.completions.create` accepts `max_completion_tokens`
+    and `tools`).
+  - Seeded RCA with the mock provider: 12 tool calls, all succeeded.
+    Leading hypothesis `deployment_regression` at 0.85, with alternatives
+    memory_exhaustion (0.34) and security_attack (0.05). Facts cite tool
+    call ids. Top recommendation: HIGH_RISK `rollback_deployment`.
+  - Mutation checks (scratch copy), both detected: disabling citation
+    validation (2 tests failed), removing incident scoping in
+    `get_related_events` (1).
+  - **Not executed:** real Anthropic/OpenAI/local-LLM calls. Only the opt-in
+    `test_live_anthropic_rca` covers them; it was skipped (no key).
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

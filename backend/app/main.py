@@ -7,9 +7,10 @@ from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request, Response
 
-from app.api import admin, calls, health, incidents, network, pipeline
+from app.api import admin, calls, health, incidents, network, pipeline, rca
 from app.config import Settings
 from app.db import make_engine, make_session_factory
+from app.llm.factory import build_provider
 from app.observability.context import request_id_var
 
 API_TITLE = "Aegis-Net API"
@@ -23,6 +24,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.engine = engine
     app.state.session_factory = make_session_factory(engine)
+    app.state.llm = build_provider(settings)
 
     @app.middleware("http")
     async def request_id(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
@@ -36,6 +38,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         response.headers["X-Request-ID"] = rid
         return response
 
-    for module in (health, pipeline, calls, network, incidents, admin):
+    for module in (health, pipeline, calls, network, incidents, rca, admin):
         app.include_router(module.router)
     return app

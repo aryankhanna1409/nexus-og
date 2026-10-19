@@ -372,19 +372,69 @@ Not correlated into incidents: C-library caller and per-call anomalies (fraud
 patterns rather than network faults). They remain available from the C
 analysis result.
 
-### 3.4 LLM provider and RCA tools — *(planned M7)*
+### 3.4 LLM providers and RCA engine (`backend/app/llm/`, `backend/app/rca/`) — implemented (M7)
 
-```python
-class LLMProvider(ABC):
-    def generate(self, messages: list[Message], *, max_tokens: int) -> LLMResponse
-    def tool_call(self, messages: list[Message], tools: list[ToolSpec], *, max_tokens: int) -> LLMResponse  # text and/or ToolCall list
-```
+**Provider abstraction** (`llm/base.py`): `LLMProvider.generate(system, messages)` and
+`LLMProvider.tool_call(system, messages, tools)` over neutral messages
+(`UserMessage`, `AssistantMessage` carrying the provider's raw content for
+unchanged echo, `ToolResultsMessage`). Errors are normalised to
+`LLMRefusalError`, `LLMRateLimitError` (retryable), `LLMUnavailableError`
+(retryable) and `LLMConfigurationError`. Providers never execute tools.
 
-RCA tools are read-only Python functions registered with a Pydantic argument
-model; the registry validates arguments, enforces time-range limits, and returns
-JSON-serialisable results tagged with a `tool_call_id`. The RCA result schema is
-spec §8 plus `facts`, `inferences`, `hypotheses` lists; each evidence item must
-reference a `tool_call_id`, otherwise the result is rejected.
+| `LLM_PROVIDER` | Class | Notes |
+|---|---|---|
+| `mock` (default) | `MockProvider` | Deterministic, rule-based (`rca/mock_investigator.py`), not an LLM. Also used whenever the selected provider lacks a key/URL/SDK; the fallback reason is returned by the API. |
+| `anthropic` | `AnthropicProvider` | Official `anthropic` SDK 1.15. Default model `claude-opus-5-5`; no `thinking` parameter (adaptive is always on); `output_config.effort="high"`; `strict` tools with `tool_choice` left at auto; server-side refusal fallbacks (`fallbacks="default"`, beta `server-side-fallback-2026-07-01`); `stop_reason == "refusal"` checked first; assistant content echoed unchanged; SDK errors mapped specific-first. |
+| `openai` | `OpenAIProvider` | Chat Completions with `strict` function tools; malformed tool-call JSON is passed to the engine as an invalid-arguments error. |
+| `local` | `OpenAIProvider(base_url=LOCAL_LLM_BASE_URL)` | Any OpenAI-compatible server (Ollama, vLLM). |
+
+Vendor SDKs are optional (`backend/requirements-llm.txt`). The request
+shapes were checked against the installed SDK signatures (anthropic 1.15.0,
+openai 3.35.1). Live API calls are covered only by an opt-in test
+(`AEGIS_RUN_LIVE_LLM_TESTS=1`), which was **not executed** in this
+environment (no key).
+
+**RCA tools** (`rca/tools.py`, spec §8 names): `get_call_statistics`,
+`get_cell_statistics`, `get_metric_history`, `get_anomalies`,
+`get_related_events`, `get_recent_deployments`, `get_security_events`,
+`get_logs`, `compare_baseline`.
+- Each tool has a strict JSON schema (all properties required, nullable
+  where optional, `additionalProperties: false`) and a Pydantic model that
+  re-validates arguments (`extra="forbid"`, strict types).
+- Inputs are bounded: known metrics, cell pattern, known services, time spans
+  of 24 h or less.
+- Access is read-only and scoped to the incident's run; `get_related_events`
+  only answers for the incident under investigation.
+- Outputs are bounded: series downsampled to ≤ 120 points, lists capped, and
+  a 16 KB result limit.
+
+**Investigation loop** (`rca/engine.py`):
+- The opening prompt holds only identifiers and symptom names, not raw data.
+- Each turn runs at most 8 tool calls (extras get errors); the loop allows
+  10 steps.
+- Unknown tools, invalid arguments and tool errors are returned to the model
+  as `is_error` results and recorded, never executed.
+- The final answer must be one JSON object validating as `RCAAnswer`
+  (`rca/schemas.py`): `facts` (each cites ≥ 1 tool call id), `inferences`,
+  `hypotheses` (cause type, confidence ≤ 0.95, supporting/contradicting
+  evidence, assessment), `recommended_actions` (with risk class and optional
+  agent tool) and `verification_steps`. The root cause must be the leading
+  hypothesis.
+- Citations must reference tool calls that happened. Facts and the leading
+  hypothesis need at least one *successful* call.
+- Rejected answers get feedback, up to 3 attempts; then the RCA is stored as
+  `failed` with the reason, and no cause is invented.
+- Provider thinking is never stored. Only structured summaries are kept
+  (spec §26).
+
+API: `POST /api/incidents/{id}/investigate` (operator) runs the loop,
+persists `root_cause_analyses` and `recommendations`, moves the incident to
+`investigating`, appends `ai_investigation_started` and
+`root_cause_identified` (or `investigation_failed`) timeline events, and
+audits `rca.investigate` with every tool call id. `GET
+/api/incidents/{id}/rca` (viewer) returns the latest RCA plus the §26
+`explanation` chain: observed evidence → correlated events → candidate
+hypotheses → evaluation → root cause → confidence → remediation.
 
 ### 3.5 DevSecOps agent — *(planned M9)*
 

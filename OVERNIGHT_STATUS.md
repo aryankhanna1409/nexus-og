@@ -10,7 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M7 — LLM abstraction + RCA engine** (depends on M6 ✅).
+Next milestone: **M8 — Reporting engine** (depends on M7 ✅).
 
 ## Milestones
 
@@ -21,7 +21,8 @@ Next milestone: **M7 — LLM abstraction + RCA engine** (depends on M6 ✅).
 | M3 Telemetry simulator | done | PASS | `7d1edf6` |
 | M4 Anomaly detection | done | PASS | `8172e7c` |
 | M5 Correlation engine | done | PASS | `c4a7d85` |
-| M6 Persistence/API/auth/audit | done | PASS | (this commit; see git log) |
+| M6 Persistence/API/auth/audit | done | PASS | `c5881b6` (+ `a18b27c` whitespace fix) |
+| M7 LLM providers + RCA | done | PASS (real-provider calls not verified) | (this commit; see git log) |
 
 ### M3 — Network telemetry simulation and seeded incidents
 
@@ -84,3 +85,20 @@ Next milestone: **M7 — LLM abstraction + RCA engine** (depends on M6 ✅).
 - Limitations: pipeline runs synchronously in the request (~3–5 s).
   Unauthenticated requests write audit rows, so flooding is a DoS vector
   until M10 rate limiting. TestClient deprecation warning (httpx2).
+
+### M7 — AI provider abstraction and root-cause analysis
+
+- Implementation: `app/llm/` (neutral interface, mock, Anthropic, OpenAI,
+  local, factory with fallback reasons), `app/rca/` (9 read-only tools with
+  strict schemas, bounded investigation loop, `RCAAnswer` schema with
+  citation validation, deterministic mock investigator), `app/services/rca.py`,
+  `POST /api/incidents/{id}/investigate`, `GET /api/incidents/{id}/rca`.
+- Commands: `make test`; `scripts/container_py312_test.sh`; 2 mutation runs;
+  SDK signature inspection.
+- Results: local 279 passed + 2 skipped, ASan 272 + 9 skipped, mypy clean.
+  Container 3.12: 279 + 2 skipped.
+- Limitations: real LLM providers are untested against live APIs (no key; the
+  test is opt-in). The mock provider is rule-based, not an LLM.
+- Process note: a commit (`c5881b6`) was created despite a `git diff --check`
+  warning (trailing whitespace) because of a `;` in the command chain. Fixed
+  in `a18b27c`; commits are now gated with `&&`.

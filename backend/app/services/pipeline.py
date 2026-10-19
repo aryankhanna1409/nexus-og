@@ -149,12 +149,21 @@ def _store_incident(session: Session, run_id: int, incident: Incident, incident_
 
 
 def run_pipeline(session: Session, params: PipelineParams, data_dir: Path) -> PipelineOutcome:
-    scenario = params.build()
+    return run_scenario(session, params.build(), data_dir, dataclasses.asdict(params))
+
+
+def run_scenario(session: Session, scenario: Scenario, data_dir: Path,
+                 params: dict[str, object] | None = None) -> PipelineOutcome:
+    """Runs the full pipeline for any scenario (used by the API, tests and the agent)."""
     result = simulate(scenario)
     run = PipelineRun(scenario=scenario.name, seed=scenario.seed, status="running",
                       started_epoch=int(time.time()), finished_epoch=None,
                       data_start_epoch=int(result.epochs[0]), data_end_epoch=int(result.epochs[-1]),
-                      fingerprint=result.fingerprint(), params=dataclasses.asdict(params))
+                      fingerprint=result.fingerprint(),
+                      params=params if params is not None else {"scenario": scenario.name,
+                                                                "seed": scenario.seed,
+                                                                "minutes": scenario.minutes,
+                                                                "rollback_minute": scenario.rollback_minute})
     session.add(run)
     session.flush()
     prefix = f"R{run.id}-"

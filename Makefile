@@ -42,7 +42,7 @@ c-test-asan:
 		ctest --test-dir $(C_BUILD_ASAN) --output-on-failure
 
 # Stamp file: bin/python is a symlink to the system interpreter and must not be touched.
-$(VENV_STAMP): backend/requirements.txt backend/requirements-dev.txt
+$(VENV_STAMP): backend/requirements.txt backend/requirements-llm.txt backend/requirements-dev.txt
 	$(PYTHON) -m venv $(VENV)
 	$(VENV_PY) -m pip install --quiet -r backend/requirements-dev.txt
 	touch $(VENV_STAMP)

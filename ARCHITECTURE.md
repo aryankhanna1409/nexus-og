@@ -252,6 +252,41 @@ half of the window. Signal falls by up to 22 dB, packet loss rises by up to
 The default fault is cell-local, so the C library reports it as cell anomalies.
 It is usually too diluted across all cells to trigger window anomalies.
 
+### 3.2b Telemetry simulator (`backend/app/simulation/`) — implemented (M3)
+
+`simulate(Scenario) -> SimulationResult` is deterministic for a given scenario:
+it uses NumPy `SeedSequence` with independent streams for profiles, incidents,
+background events and each cell. Default topology: 12 cells (`CELL-101…112`)
+served by 3 packet-gateway nodes (`pgw-1…3`, 4 cells each), 1-minute
+resolution, 6 hours from 2026-03-01T12:00Z.
+
+- `metrics.py` — the 17 spec §5 KPIs with units, physical bounds and the bad
+  direction (consumed by M4).
+- `model.py` — causal model per cell, with AR(1) noise on every metric:
+  diurnal users → CPU and offered load; memory → CPU (GC pressure above 75 %);
+  CPU → queueing latency → jitter; CPU saturation and interface faults →
+  loss → retransmissions and goodput; radio penalty → RSRP/RSSI/RSRQ/SINR →
+  handovers and drops; latency/loss/SINR → setup success and drops.
+- `incidents.py` — the 9 incident types. They only modify *drivers* (load
+  factor, extra CPU/memory, interface loss, radio penalty, configuration
+  penalties) and emit events. Node-scoped types (`memory_leak`,
+  `software_deployment_regression`) target a `pgw-N` and create a
+  `DeploymentRecord`.
+- `scenario.py` — rollback support: `rollback_minute` ends deployment-induced
+  effects, with memory freed over 3 minutes, and emits a `rollback` event.
+  The seeded scenario (`seeded_memory_leak_scenario`) deploys
+  packet-gateway 2.4.1 to pgw-1 at 14:05. A benign hotfix deployment on pgw-3
+  at 13:10 is a deliberate distractor for correlation.
+- `cdr.py` — CDRs drawn from each cell's KPIs (C-library CSV schema).
+- `io.py` — outputs: `data/network_metrics/network_metrics.csv` (wide:
+  timestamp, cell_id, node_id, 17 KPIs), `data/incidents/events.jsonl`,
+  `deployments.jsonl`, `ground_truth.json`,
+  `data/security/security_events.jsonl`, `data/call_logs/call_logs.csv`.
+
+Ground truth is for tests and the demo only; detection and RCA never read it.
+Synthetic IPs use the documentation ranges 203.0.113.0/24 (attack) and
+198.51.100.0/24 (background).
+
 ### 3.3 Analytics and correlation — *(planned M4–M5)*
 
 ```python

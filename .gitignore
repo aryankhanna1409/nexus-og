@@ -35,3 +35,6 @@ Thumbs.db
 # Generated synthetic data (reproduce with `make call-logs`)
 data/call_logs/*.csv
 data/call_logs/*.json
+data/network_metrics/*.csv
+data/incidents/*.json*
+data/security/*.jsonl

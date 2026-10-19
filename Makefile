@@ -11,7 +11,7 @@ VENV_PY      := $(VENV)/bin/python
 VENV_STAMP   := $(VENV)/.requirements-installed
 SEED         ?= 42
 
-.PHONY: help c-build c-test c-test-asan py-venv py-test py-test-asan py-typecheck call-logs test clean
+.PHONY: help c-build c-test c-test-asan py-venv py-test py-test-asan py-typecheck call-logs network-data container-test test clean
 
 help:
 	@echo "Targets:"
@@ -23,6 +23,8 @@ help:
 	@echo "  py-test-asan  Run Python tests against the ASan/UBSan library build"
 	@echo "  py-typecheck  Run mypy --strict on the binding and generator"
 	@echo "  call-logs     Generate data/call_logs/call_logs.csv (SEED=$(SEED))"
+	@echo "  network-data  Simulate the seeded incident into data/ (telemetry, events, CDRs)"
+	@echo "  container-test  Run C + Python tests in a python:3.12-slim container"
 	@echo "  test          Run all available test suites"
 	@echo "  clean         Remove build artifacts and caches"
 
@@ -40,7 +42,7 @@ c-test-asan:
 		ctest --test-dir $(C_BUILD_ASAN) --output-on-failure
 
 # Stamp file: bin/python is a symlink to the system interpreter and must not be touched.
-$(VENV_STAMP): backend/requirements-dev.txt
+$(VENV_STAMP): backend/requirements.txt backend/requirements-dev.txt
 	$(PYTHON) -m venv $(VENV)
 	$(VENV_PY) -m pip install --quiet -r backend/requirements-dev.txt
 	touch $(VENV_STAMP)
@@ -68,6 +70,12 @@ py-typecheck: py-venv
 call-logs:
 	$(PYTHON) scripts/generate_call_logs.py --seed $(SEED) \
 		--output data/call_logs/call_logs.csv --manifest data/call_logs/call_logs.manifest.json
+
+network-data: py-venv
+	$(VENV_PY) scripts/generate_network_metrics.py --scenario seeded --seed 7 --out-dir data
+
+container-test:
+	scripts/container_py312_test.sh
 
 test: c-test c-test-asan py-test py-test-asan py-typecheck
 

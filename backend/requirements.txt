@@ -1,0 +1,2 @@
+# Runtime dependencies (pinned; verified on Python 3.14 locally and 3.12 in a container).
+numpy==2.5.4

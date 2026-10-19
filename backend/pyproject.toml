@@ -21,4 +21,4 @@ addopts = "-ra --strict-markers"
 [tool.mypy]
 python_version = "3.12"
 strict = true
-files = ["call_analyzer", "../scripts/generate_call_logs.py"]
+files = ["call_analyzer", "app", "../scripts/generate_call_logs.py", "../scripts/generate_network_metrics.py", "../scripts/simulate_incident.py"]

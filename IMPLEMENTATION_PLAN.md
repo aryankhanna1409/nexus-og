@@ -200,7 +200,7 @@ malformed/unknown tool calls from the LLM are rejected and logged; real
 providers are exercised only if a key is present (tests skip otherwise, and the
 skip is reported). Consult the `claude-api` skill before writing the Anthropic provider.
 
-### M8 — Reporting engine `[ ]`
+### M8 — Reporting engine `[x]`
 
 Scope: `backend/app/reporting/`. Report sections per spec §9; JSON, Markdown and
 HTML renderers (Jinja2 with autoescape); PDF optional/deferred.
@@ -284,7 +284,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R10 | 6 | Optional ML detectors (Isolation Forest/DBSCAN) | `app/analytics/` | deferred | — | deferred (optional) |
 | R11 | 7 | Cross-source correlation → Incident object | `app/analytics/correlation.py` | M5 | `tests/test_correlation.py` (29 tests) | verified |
 | R12 | 8 | LLM RCA with structured tools; facts vs hypotheses | `app/rca/`, `app/llm/` | M7 | `tests/test_rca.py` (44 tests; live-provider test opt-in, not run) | verified (mock + fake SDK clients) |
-| R13 | 9 | AI report (JSON/Markdown/HTML; PDF optional) | `app/reporting/` | M8 | `test_reporting.py` | planned |
+| R13 | 9 | AI report (JSON/Markdown/HTML; PDF optional) | `app/reporting/` | M8 | `tests/test_reporting.py` (11 tests; PDF not implemented) | verified |
 | R14 | 10 | Agent tools + OBSERVE…CLOSE loop | `app/agents/` | M9 | `test_agent_loop.py` | planned |
 | R15 | 11 | Scenarios: vulnerable dependency, failed CI, production anomaly | `app/agents/scenarios/` | M9 | `test_agent_scenarios.py` | planned |
 | R16 | 12 | Action risk classes, approval gating, rationale, logging | `app/agents/policy.py` | M9 | `test_agent_policy.py` | planned |
@@ -507,6 +507,16 @@ Entries record commands actually executed and their outcome.
     `get_related_events` (1).
   - **Not executed:** real Anthropic/OpenAI/local-LLM calls. Only the opt-in
     `test_live_anthropic_rca` covers them; it was skipped (no key).
+- 2026-10-19 — **M8** (reporting). Local Python 3.14: `make test` exit 0. pytest
+  **290 passed, 2 skipped**; ASan run 283 passed + 9 skipped; mypy clean
+  (72 files). Container Python 3.12: **290 passed, 2 skipped**, mypy clean.
+  - KPI figures are verified against an independent recomputation from
+    `network_metrics`.
+  - Mutation checks (scratch copy), all detected: HTML autoescape off, no
+    narrative grounding check, no Markdown escaping (1 test failed each).
+  - Review of a generated report led to three fixes: "between…to"
+    wording, a duplicated version in the correlation hypothesis text, and the
+    onset sequence now labelled temporal rather than causal.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

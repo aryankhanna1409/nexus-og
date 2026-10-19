@@ -308,7 +308,7 @@ def _score_causes(
         when = f"{lead:.0f} min before" if lead >= 0 else f"{-lead:.0f} min after"
         if event.type is EventType.DEPLOYMENT:
             topology = 1.0 if event.node_id in nodes else 0.5
-            add("deployment_regression", f"{event.message} ({event.attributes.get('to_version', '?')})",
+            add("deployment_regression", event.message,
                 temporal, topology, (event.event_id,),
                 f"deployment {when} symptom onset on the same node; earliest symptoms "
                 f"{[s.metric for s in symptoms[:2]]}")

@@ -12,6 +12,7 @@ packages = ["call_analyzer"]
 
 [tool.setuptools.package-data]
 call_analyzer = ["py.typed"]
+"app.reporting" = ["templates/*.j2"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

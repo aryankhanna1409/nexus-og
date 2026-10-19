@@ -38,18 +38,18 @@ class MockProvider(LLMProvider):
         context: dict[str, Any] = {}
         if CONTEXT_JSON_MARKER in prompt:
             context = json.loads(prompt.split(CONTEXT_JSON_MARKER, 1)[1])
-        text = _summarise(context)
+        text = template_summary(context)
         return LLMResponse(text=text, tool_calls=(), stop_reason="end_turn", model=self.model,
                            provider=self.name)
 
 
-def _summarise(context: dict[str, Any]) -> str:
+def template_summary(context: dict[str, Any]) -> str:
     """Template summary: every number comes from `context`, nothing is invented."""
     if not context:
         return "No context was provided; no summary generated (deterministic mock provider)."
     parts = [f"Incident {context.get('incident_id', '?')} ({context.get('severity', '?')})"]
     if context.get("window"):
-        parts.append(f"degraded service between {context['window']}")
+        parts.append(f"degraded service from {context['window']}")
     sentence = " ".join(parts) + "."
     findings = context.get("key_findings", [])
     if findings:

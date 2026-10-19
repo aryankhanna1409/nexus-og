@@ -436,6 +436,40 @@ audits `rca.investigate` with every tool call id. `GET
 `explanation` chain: observed evidence → correlated events → candidate
 hypotheses → evaluation → root cause → confidence → remediation.
 
+### 3.4a Reporting engine (`backend/app/reporting/`) — implemented (M8)
+
+`build_report(session, incident_id, provider_choice, created_by) -> ReportDocument`
+(Pydantic, `document.py`) produces one structured document. It is rendered as
+JSON (`model_dump_json`), Markdown and HTML (Jinja2 templates in
+`reporting/templates/`). PDF (optional in spec §9) is not implemented.
+
+| Section | Source (computed, not generated) |
+|---|---|
+| KPI analysis | `network_metrics`: mean of the affected cells for the hour before onset vs the incident window, plus the worst value in the bad direction and % change |
+| Anomaly analysis | incident symptoms (M4/M5) |
+| Correlation analysis | symptom onset sequence (labelled temporal, not causal), chain consistency, ranked correlation hypotheses, excluded candidates, C-library call evidence |
+| Root cause | latest completed RCA (facts with tool-call citations, inferences, alternatives), else the correlation hypothesis, always labelled as a hypothesis |
+| Impact | affected cells/nodes, duration, users connected (mean `active_users` per cell, summed), dropped/failed calls from the C analysis |
+| Recommendations, verification, confidence | RCA recommendations with risk classes; RCA and correlation confidence; caveats (incl. "not verified until recovery is confirmed") |
+| Evidence references | RCA tool-call ids, anomaly ids, event ids |
+
+The executive summary is the only generated prose. It comes from
+`LLMProvider.generate` (the mock uses a deterministic template) and is
+accepted only if every number in it appears in the JSON context the model was
+given. Otherwise the template is used and `narrative_provider` records the
+rejection; provider errors also fall back to the template.
+
+Security: HTML is autoescaped, and Markdown table cells escape `|`, `\`, `<`,
+`>` and newlines. Both are tested with injected `<script>`/`<img onerror>`
+payloads. The HTML endpoint sends
+`Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'` and
+`X-Content-Type-Options: nosniff`.
+
+API: `POST /api/reports/generate {incident_id}` (operator, audited
+`report.generate`) stores the document and both renderings
+(`RPT-INC-YYYY-NNN-NN`). `GET /api/reports?incident_id=` and `GET
+/api/reports/{report_id}?format=json|markdown|html` require viewer.
+
 ### 3.5 DevSecOps agent — *(planned M9)*
 
 ```python

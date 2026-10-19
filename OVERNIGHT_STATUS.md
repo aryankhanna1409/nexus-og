@@ -10,7 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M8 — Reporting engine** (depends on M7 ✅).
+Next milestone: **M9 — DevSecOps agent** (depends on M6 ✅, M7 ✅).
 
 ## Milestones
 
@@ -22,7 +22,8 @@ Next milestone: **M8 — Reporting engine** (depends on M7 ✅).
 | M4 Anomaly detection | done | PASS | `8172e7c` |
 | M5 Correlation engine | done | PASS | `c4a7d85` |
 | M6 Persistence/API/auth/audit | done | PASS | `c5881b6` (+ `a18b27c` whitespace fix) |
-| M7 LLM providers + RCA | done | PASS (real-provider calls not verified) | (this commit; see git log) |
+| M7 LLM providers + RCA | done | PASS (real-provider calls not verified) | `6d4f4b0` |
+| M8 Reporting | done | PASS (PDF optional, not implemented) | (this commit; see git log) |
 
 ### M3 — Network telemetry simulation and seeded incidents
 
@@ -102,3 +103,16 @@ Next milestone: **M8 — Reporting engine** (depends on M7 ✅).
 - Process note: a commit (`c5881b6`) was created despite a `git diff --check`
   warning (trailing whitespace) because of a `;` in the command chain. Fixed
   in `a18b27c`; commits are now gated with `&&`.
+
+### M8 — Reporting engine
+
+- Implementation: `app/reporting/` (document model, builder computing every
+  figure from the DB, grounded LLM narrative with template fallback, Jinja2
+  Markdown/HTML templates), `/api/reports/generate`, `/api/reports`,
+  `/api/reports/{id}?format=`.
+- Commands: `make test`; `scripts/container_py312_test.sh`; 3 mutation runs.
+- Results: local 290 passed + 2 skipped, ASan 283 + 9 skipped, mypy clean.
+  Container 3.12: 290 + 2 skipped.
+- Limitations: no PDF output. Impact call counts cover the whole analysed
+  call log for the affected cells, not only the incident window (stated in
+  the report text).

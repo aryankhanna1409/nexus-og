@@ -240,7 +240,7 @@ aesthetic; incident timeline; RCA explainability panel; agent approval UI.
 Vitest + Testing Library component tests (run in a `node` container since Node
 is absent in WSL). Acceptance: all pages render real API data; component tests pass.
 
-### M13 — `make demo`, end-to-end tests, final audit `[ ]`
+### M13 — `make demo`, end-to-end tests, final audit `[x]`
 
 `make demo` runs the 13 demo steps offline with the mock provider; integration
 tests for both pipelines in spec §22; README per spec §28 with Mermaid diagrams;
@@ -281,7 +281,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R7 | 5 | Correlated network telemetry simulator | `app/simulation/` | M3 | `tests/test_simulation.py` (chain, correlation, determinism, baseline) | verified |
 | R8 | 5 | Nine incident types simulated | `app/simulation/incidents.py` | M3 | `test_each_incident_type[*]` (9 cases) | verified |
 | R9 | 6 | Interpretable anomaly detectors + anomaly schema | `app/analytics/` | M4 | `tests/test_analytics.py` (24 tests) | verified |
-| R10 | 6 | Optional ML detectors (Isolation Forest/DBSCAN) | `app/analytics/` | deferred | — | deferred (optional) |
+| R10 | 6 | Optional ML detectors (Isolation Forest/DBSCAN) | `app/analytics/` | — | — | NOT IMPLEMENTED (optional in spec; documented limitation) |
 | R11 | 7 | Cross-source correlation → Incident object | `app/analytics/correlation.py` | M5 | `tests/test_correlation.py` (29 tests) | verified |
 | R12 | 8 | LLM RCA with structured tools; facts vs hypotheses | `app/rca/`, `app/llm/` | M7 | `tests/test_rca.py` (44 tests; live-provider test opt-in, not run) | verified (mock + fake SDK clients) |
 | R13 | 9 | AI report (JSON/Markdown/HTML; PDF optional) | `app/reporting/` | M8 | `tests/test_reporting.py` (11 tests; PDF not implemented) | verified |
@@ -291,21 +291,54 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R17 | 13, 25 | Dashboard pages, KPI cards, charts, NOC aesthetic | `frontend/` | M12 | Vitest (10 tests) + Playwright browser check of all 11 routes against the Docker stack + screenshot review | verified |
 | R18 | 14 | Interactive incident timeline | `frontend/src/components/IncidentTimeline.tsx`, incident API | M12 | `IncidentTimeline` ordering test, browser check of `/incidents/INC-2026-001` | verified |
 | R19 | 15 | Schemas for 11 entities, Pydantic at API | `app/models`, `app/schemas/entities.py` | M6 | `tests/test_api_core.py` (responses validated through the schemas) | verified |
-| R20 | 16 | REST API endpoints + OpenAPI | `app/api/` | M6–M9 | `tests/test_api_core.py` (M6 endpoints); RCA/report/agent endpoints pending | partial (M6 verified) |
+| R20 | 16 | REST API endpoints + OpenAPI | `app/api/` | M6–M12 | `test_api_core.py`, `test_rca.py`, `test_reporting.py`, `test_agent.py`, `test_security.py`, `test_e2e.py`; all spec §16 endpoints present; OpenAPI test | verified |
 | R21 | 17 | PostgreSQL, migrations, relational tables + JSON evidence | `alembic/`, `app/models` | M6 | `test_sqlite_migration_*`, `test_postgres_migration_and_pipeline` (run against postgres:16) | verified |
-| R22 | 18 | Monorepo structure | repo | all | structure check in self-audit | in progress |
+| R22 | 18 | Monorepo structure | repo | all | self-audit: all §18 paths exist; integration tests live in `backend/tests/` (explained in `tests/README.md`) | verified (one documented deviation) |
 | R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, `backend/Dockerfile`, `frontend/Dockerfile` | M11, M12 | `scripts/docker_smoke.sh` with `SMOKE_UI_CHECK=1` (all four services) | verified |
 | R24 | 20 | LLM provider abstraction, env config, no committed keys | `app/llm/` | M7 | `test_provider_selection`, Anthropic/OpenAI request-shape and error-mapping tests | verified offline; real API calls not executed (no key) |
 | R25 | 21 | Structured logs, request/agent/incident IDs, metrics, audit | `app/observability/`, `app/security/middleware.py` | M6, M10 | `tests/test_security.py` (logging/metrics tests) | verified (OpenTelemetry not implemented) |
-| R26 | 22 | C, Python, frontend, integration tests | all | every milestone, M13 | `make test` | planned |
-| R27 | 23 | `make demo` offline with mock provider, 13 steps | `scripts/`, `Makefile` | M13 | `test_demo_e2e.py` + manual run | planned |
-| R28 | 24 | Seeded memory-leak deployment incident + evidence chain | M3 simulator, M5, M7 | M3, M5, M7 | M3 part: `test_ordered_degradation_chain`, `test_rollback_restores_counterfactual_baseline`; e2e later | partial (M3 verified) |
-| R29 | 26 | Explainability chain without hidden chain-of-thought | `app/rca/`, frontend RCA page | M7, M12 | `test_rca_schema.py`, `RcaPanel.test.tsx` | planned |
-| R30 | 27 | AuthN, RBAC, approvals, rate limiting, safe subprocess, no LLM shell | `app/security/`, `app/agents/executor.py` | M6, M9, M10 | `test_auth.py`, `test_rate_limit.py`, `test_no_shell_true.py`, `test_executor_allowlist.py` | planned |
-| R31 | 28 | README with 16 sections + Mermaid; docs/ | `README.md`, `docs/` | M13 (incremental) | self-audit checklist | planned |
-| R32 | 31 | `make test`, `make demo`, `make clean`; self-audit | `Makefile` | M1 (test/clean), M13 (demo) | executed in M13 | in progress |
+| R26 | 22 | C, Python, frontend, integration tests | all | M1–M13 | `make test` (C 2+2 executables, Python 352 + 3 opt-in skips, ASan run 345, mypy, Vitest 10) + `test_e2e.py` both chains | verified |
+| R27 | 23 | `make demo` offline with mock provider, 13 steps | `scripts/demo.py`, `Makefile` | M13 | `make demo` (exit 0) + `test_offline_demo_runs_end_to_end` | verified |
+| R28 | 24 | Seeded memory-leak deployment incident + evidence chain | simulator, analytics, RCA, agent | M3–M9, M13 | `test_ordered_degradation_chain`, `test_seeded_*` (M4/M5), `test_mock_rca_on_seeded_incident`, `test_production_anomaly_rollback_and_recovery`, `test_data_to_analytics_to_incident_to_rca_to_report` | verified (rollback simulated) |
+| R29 | 26 | Explainability chain without hidden chain-of-thought | `app/rca/`, `app/api/rca.py`, `RcaPanel` | M7, M12 | `test_investigate_endpoint` (explanation keys), `RcaPanel` component test, browser check of `/rca` | verified |
+| R30 | 27 | AuthN, RBAC, approvals, rate limiting, safe subprocess, no LLM shell | `app/security/`, `app/agents/` | M6, M9, M10 | `test_role_matrix`, `test_tokens_only_accepted_as_bearer_header`, `test_rate_limit`, `test_runner_never_uses_a_shell`, `test_runner_rejects_non_allowlisted_commands`, agent gate tests + 6 mutation checks | verified |
+| R31 | 28 | README with 16 sections + Mermaid; docs/ | `README.md`, `docs/` | M13 | self-audit: 16 numbered sections, 4 Mermaid diagrams; `docs/{architecture,api,agent,rca,security}.md` | verified |
+| R32 | 31 | `make test`, `make demo`, `make clean`; self-audit | `Makefile` | M13 | all three executed in the final sweep (exit 0); self-audit below | verified |
 
 ---
+
+## 4a. Final self-audit (spec §31), 2026-10-19
+
+Each answer is backed by commands executed in the final sweep (log below).
+
+| Question | Answer | Evidence |
+|---|---|---|
+| Does the C library compile? | Yes | `-Werror` + 13 extra warnings, gcc 15.2 (host) and gcc 14.2 (container and backend image build) |
+| Do C tests pass? | Yes | ctest 2/2 normal, 2/2 under ASan/UBSan/LSan (fault injection over every allocation site); ctest in the Docker build |
+| Does Python correctly call the C library? | Yes | binding tests incl. per-field ABI probe, reference comparisons, ownership spies; `/api/health` reports `call_analyzer: ok` in Docker |
+| Does the telemetry generator produce correlated data? | Yes | ordered degradation chain; Spearman CPU→latency 0.87–0.97 in incident vs ≤ 0.47 baseline |
+| Does anomaly detection detect the seeded incident? | Yes | all six spec §24 symptoms on CELL-101..104 only, in causal order; FP rate 0.27/100 series-days |
+| Does correlation produce a meaningful incident? | Yes | one CRITICAL incident, deployment hypothesis 0.89, distractor excluded, 0 incidents on 20 healthy days |
+| Does the RCA engine receive structured evidence? | Yes | 9 read-only tools; opening prompt has ids and symptom names only; facts must cite successful tool calls |
+| Does the AI report contain evidence and confidence? | Yes | report sections, evidence references, RCA and correlation confidence, caveats; numbers checked against the DB |
+| Does the DevSecOps agent use controlled tools? | Yes | 20 allowlisted tools, sandboxed runner, `shell=False` enforced |
+| Are dangerous actions approval-gated? | Yes | REQUIRES_APPROVAL/HIGH_RISK/BLOCKED gates re-checked at execution; 6 gate mutations detected; demo shows 409 before approval |
+| Does the dashboard consume real backend data? | Yes | typed client only; Playwright check rendered all 11 routes from the live Docker stack |
+| Does the complete demo work end-to-end? | Yes | `make demo` exit 0 (13 steps, resolved incident, valid audit chain); `test_offline_demo_runs_end_to_end` |
+| Does `docker compose up --build` work from a clean environment? | Yes | `--no-cache` smoke build passed (M11); the documented `make env` + `docker compose up --build` flow brought all four services up in the final sweep |
+| Are there hard-coded secrets? | No | regex scan of tracked/new files found none (test-only fake keys excepted); `.env`/tokens not tracked |
+| Broken imports, placeholders, dead code? | None found | mypy strict clean (86 files), tsc strict clean, no TODO/FIXME/placeholder in app code; `restart_service` is registered but deliberately not modelled and fails with an explanation (documented) |
+
+**Not verified / not implemented:**
+- live Anthropic/OpenAI/local-LLM calls (no key; opt-in test exists);
+- Isolation Forest/DBSCAN, PDF reports, OpenTelemetry/Grafana (optional in spec);
+- behaviour on real (non-synthetic) telemetry;
+- clang and other compilers;
+- non-glibc platforms.
+
+**Production readiness:** this is a working prototype, **not** production-ready
+(no TLS, external identity, secret manager, HA or real infrastructure
+integration).
 
 ## 5. Verification log
 
@@ -571,6 +604,21 @@ Entries record commands actually executed and their outcome.
     (a duplicate "85%" match); all fixed. A screenshot review led to
     rounding tooltip values and labelling KPI cards "all-cell mean, last
     30 min".
+- 2026-10-19 — **M13** (demo, E2E, docs, final audit). New: `scripts/demo.py`
+  (`make demo`), `backend/tests/test_e2e.py` (3 tests), README (16
+  sections, 4 Mermaid diagrams), `docs/*.md`, `tests/README.md`. The demo
+  exposed a defect: after a rollback the incident window still ended at the
+  end of the un-remediated data. The incident now ends when the last
+  post-rollback anomaly ends (regression assertion added).
+  - Final sweep: `make clean` exit 0; `make demo` exit 0 (resolved,
+    `recovered=True`, audit chain valid, report files written); `make test`
+    exit 0 (C 2/2 + 2/2, Python **352 passed, 3 skipped**, ASan 345 + 10
+    skipped, mypy clean, Vitest 10 passed + build); container Python 3.12
+    **352 passed, 3 skipped**; Docker smoke + browser check passed; `make env`
+    + `docker compose up --build`: backend/postgres/redis healthy, UI served,
+    UI→API data returned. Torn down with `docker compose down -v`, and the
+    generated `.env`/`.aegis-tokens` removed.
+  - Scans: no secrets, no `shell=True`, no TODO/FIXME/placeholders in app code.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

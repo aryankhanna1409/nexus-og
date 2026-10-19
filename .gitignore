@@ -44,3 +44,6 @@ data/security/*.jsonl
 # Generated reports
 reports/*
 !reports/.gitkeep
+data/demo/
+data/runs/
+data/aegis.db

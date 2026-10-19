@@ -10,7 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M13 — make demo, E2E tests, README, final audit** (depends on M12 ✅).
+All milestones M1–M13 are complete. See the final self-audit in `IMPLEMENTATION_PLAN.md` §4a.
 
 ## Milestones
 
@@ -27,8 +27,8 @@ Next milestone: **M13 — make demo, E2E tests, README, final audit** (depends o
 | M9 DevSecOps agent | done | PASS (rollback simulated by design) | `77184fd` |
 | M10 Hardening + observability | done | PASS (OpenTelemetry not implemented) | `08f26c3` |
 | M11 Docker | done | PASS | `3ace7ba` |
-| M12 Dashboard | done | PASS | (this commit; see git log) |
-| M13 Demo/E2E/audit | not started | — | — |
+| M12 Dashboard | done | PASS | `0efbbbe` |
+| M13 Demo/E2E/audit | done | PASS WITH DOCUMENTED LIMITATIONS | (this commit; see git log) |
 
 ### M3 — Network telemetry simulation and seeded incidents
 
@@ -171,3 +171,16 @@ Next milestone: **M13 — make demo, E2E tests, README, final audit** (depends o
 - Limitations: one page bundle per vendor chunk, no code-splitting per route;
   no frontend end-to-end tests of the approval flow in the browser (covered by
   API tests).
+
+### M13 — Demo, end-to-end tests and final audit
+
+- Implementation: `scripts/demo.py` + `make demo`, `make clean` extended,
+  `backend/tests/test_e2e.py`, `README.md`, `docs/`, `tests/README.md`,
+  final traceability and self-audit (`IMPLEMENTATION_PLAN.md` §4, §4a).
+- Fix: the incident window after rollback now ends when the post-rollback
+  degradation ended.
+- Final sweep results: see the plan's verification log. All documented
+  commands exited 0.
+- Outstanding (not blockers): live LLM providers unverified (no key); optional
+  ML detectors, PDF and OpenTelemetry not implemented; prototype, not
+  production-ready.

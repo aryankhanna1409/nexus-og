@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.agents import advisories
@@ -401,6 +401,13 @@ def rollback_deployment(ctx: AgentContext, args: DeploymentArgs) -> dict[str, An
                                    "rollback_minute": rollback_minute, "agent_run": ctx.run.run_id},
                            correlate_flag=False)
     rollback_epoch = source.data_start_epoch + rollback_minute * 60
+    # The degradation ended when the last anomaly on the affected cells ended in the
+    # post-rollback telemetry (not at the end of the original, un-remediated data).
+    cells = list(ctx.session.scalars(select(IncidentCell.cell_id).where(
+        IncidentCell.incident_id == incident.incident_id)))
+    last_anomaly_end = ctx.session.scalar(select(func.max(Anomaly.end_epoch)).where(
+        Anomaly.run_id == outcome.run.id, Anomaly.cell_id.in_(cells)))
+    incident.end_epoch = max(rollback_epoch, int(last_anomaly_end or rollback_epoch))
     deployment.status = "rolled_back"
     deployment.rolled_back_epoch = rollback_epoch
     incident.status = "mitigated"

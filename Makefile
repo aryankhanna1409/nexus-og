@@ -13,6 +13,8 @@ SEED         ?= 42
 
 
 
+
+.PHONY: demo
 .PHONY: frontend-test
 .PHONY: env docker-build docker-up docker-down docker-smoke
 .PHONY: help c-build c-test c-test-asan py-venv py-test py-test-asan py-typecheck call-logs network-data container-test test clean
@@ -34,6 +36,7 @@ help:
 	@echo "  docker-smoke  Build, start and smoke-test the Docker stack, then stop it"
 	@echo "  docker-down   Stop the stack (keeps volumes)"
 	@echo "  frontend-test Type-check, test and build the dashboard in a node:22 container"
+	@echo "  demo          Offline end-to-end demo (SQLite, mock LLM, synthetic data)"
 	@echo "  test          Run all available test suites"
 	@echo "  clean         Remove build artifacts and caches"
 
@@ -83,6 +86,9 @@ call-logs:
 network-data: py-venv
 	$(VENV_PY) scripts/generate_network_metrics.py --scenario seeded --seed 7 --out-dir data
 
+demo: c-build py-venv
+	$(VENV_PY) scripts/demo.py
+
 # Node is not required on the host: the dashboard is checked inside node:22-alpine.
 frontend-test:
 	docker run --rm -u "$$(id -u):$$(id -g)" -e HOME=/tmp -v "$(CURDIR)/frontend":/app -w /app node:22-alpine \
@@ -109,6 +115,7 @@ container-test:
 test: c-test c-test-asan py-test py-test-asan py-typecheck frontend-test
 
 clean:
-	rm -rf $(C_BUILD) $(C_BUILD_ASAN)
+	rm -rf $(C_BUILD) $(C_BUILD_ASAN) data/demo frontend/dist
+	find reports -type f ! -name .gitkeep -delete
 	find backend scripts -name __pycache__ -type d -prune -exec rm -rf {} +
 	rm -rf backend/.pytest_cache backend/.mypy_cache

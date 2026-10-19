@@ -263,6 +263,9 @@ def test_production_anomaly_rollback_and_recovery(tmp_path: Path) -> None:
     assert executed["result"]["simulated"] is True
     incident = api.get("/api/incidents/INC-2026-001").json()  # type: ignore[attr-defined]
     assert incident["status"] == "resolved"
+    rollback_epoch = next(e["epoch"] for e in incident["events"] if e["type"] == "rollback_executed")
+    # Incident window now ends when the degradation ended after the rollback, not at the end of the data.
+    assert rollback_epoch <= incident["end_epoch"] <= rollback_epoch + 600
     assert {"agent_opened", "rollback_executed", "incident_resolved"} <= {e["type"] for e in incident["events"]}
     assert [i["incident_id"] for i in api.get("/api/incidents").json()] == ["INC-2026-001"]  # type: ignore[attr-defined]
     with _session(api) as s:

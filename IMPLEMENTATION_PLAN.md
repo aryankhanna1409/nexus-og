@@ -147,7 +147,7 @@ latency even when healthy. "Rollback returns to baseline" is verified exactly:
 from 3 minutes after rollback, every KPI equals a healthy run with the same seed
 (atol 1e-9).
 
-### M4 — Analytics and anomaly detection `[ ]`
+### M4 — Analytics and anomaly detection `[x]`
 
 Scope: `backend/app/analytics/`. Moving average, rolling std, Z-score, EWMA,
 thresholds, rate-of-change; ensemble scoring; anomaly objects per spec §6
@@ -157,6 +157,11 @@ Acceptance: on the seeded incident, anomalies are raised for memory, CPU,
 latency, packet loss, throughput (drop) and call-drop rate, with timestamps
 after the deployment; false-positive rate on a clean 24 h baseline below a
 documented bound; each detector unit-tested on synthetic step/spike/ramp series.
+
+Documented FP bound (M4): ≤ 1 false-positive episode per 100 series-days and
+no high/critical false positives. Measured over 20 seeds: 11 episodes in
+4,080 series-days (0.27 per 100), all low/medium. The test enforces the bound
+on 8 seeds (1,632 series-days).
 
 ### M5 — Correlation engine `[ ]`
 
@@ -275,7 +280,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R6 | 4 | Python binding, `analyze_call_log()` returning structured dict | `backend/call_analyzer/` | M2 | `backend/tests/test_call_analyzer_binding.py`, `test_generate_call_logs.py` | verified (py3.14 local, py3.12 container) |
 | R7 | 5 | Correlated network telemetry simulator | `app/simulation/` | M3 | `tests/test_simulation.py` (chain, correlation, determinism, baseline) | verified |
 | R8 | 5 | Nine incident types simulated | `app/simulation/incidents.py` | M3 | `test_each_incident_type[*]` (9 cases) | verified |
-| R9 | 6 | Interpretable anomaly detectors + anomaly schema | `app/analytics/` | M4 | `test_detectors.py`, `test_anomaly_schema.py` | planned |
+| R9 | 6 | Interpretable anomaly detectors + anomaly schema | `app/analytics/` | M4 | `tests/test_analytics.py` (24 tests) | verified |
 | R10 | 6 | Optional ML detectors (Isolation Forest/DBSCAN) | `app/analytics/` | deferred | — | deferred (optional) |
 | R11 | 7 | Cross-source correlation → Incident object | `app/analytics/correlation.py` | M5 | `test_correlation.py` | planned |
 | R12 | 8 | LLM RCA with structured tools; facts vs hypotheses | `app/rca/`, `app/llm/` | M7 | `test_rca_engine.py`, `test_rca_tools.py`, `test_rca_schema.py` | planned |
@@ -422,6 +427,24 @@ Entries record commands actually executed and their outcome.
   - Seeded scenario: CDRs analysed by the C library flag exactly
     CELL-101..104 (cell setup-failure and packet-loss anomalies); healthy CDRs
     flag no cell.
+- 2026-10-19 — **M4** (anomaly detection). Local: `make test` exit 0. C 2/2 + 2/2,
+  `py-test` **179 passed** (24 new), `py-test-asan` 172 + 7 skipped, mypy clean
+  (23 files). Container Python 3.12: **179 passed**, mypy clean.
+  - Defect found during development: baseline contamination. Unflagged but
+    degraded points, and good-direction excursions, entered the baseline:
+    the latency baseline drifted 25→53 ms, episodes fragmented, and a throughput
+    collapse lowered the bandwidth baseline so that recovery blips were
+    reported as bandwidth spikes. Fixed with an admission rule (|z| < 2.5)
+    plus a documented 6 h re-baseline.
+  - The first FP test asserted zero false positives and failed on seed 21
+    (2 low-severity RSSI episodes). Replaced with the measured bound above.
+  - Mutation checks (scratch copy) — all detected:
+    - admitting every unflagged point to the baseline → 2 tests failed
+    - treating DOWN metrics as UP → 6 failed
+    - requiring all three statistical detectors → 4 failed
+    - removing both practical-delta gates → 1 failed. This mutation initially
+      survived the original single-spike test, which did not isolate the
+      gate. That test was replaced by a sustained sub-delta shift test.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

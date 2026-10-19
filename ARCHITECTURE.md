@@ -287,6 +287,34 @@ Ground truth is for tests and the demo only; detection and RCA never read it.
 Synthetic IPs use the documentation ranges 203.0.113.0/24 (attack) and
 198.51.100.0/24 (background).
 
+### 3.3a Anomaly detection (`backend/app/analytics/`) — implemented (M4)
+
+Input: `MetricSeries(metric, cell_id, node_id, epochs, values)` (adapters in
+`sources.py` for simulator output and the metrics CSV). The detection modules
+import only the KPI catalogue from the simulator, which is enforced by a test.
+Per point, in time order (`detectors.evaluate_series`):
+
+| Detector | Rule |
+|---|---|
+| `zscore` | Trailing 60-min time-window mean/std of admitted points; z = (x − mean)/max(std, floor) |
+| `ewma` | Time-aware EWMA mean/variance (τ = 15 min) of admitted points |
+| `rate_of_change` | Per-minute change vs the median/MAD of recent healthy changes (z ≥ 5) |
+| `threshold` | Static warning/critical levels per KPI (`config.DEFAULT_RULES`) |
+
+- A point is **flagged** on a threshold breach, on zscore and EWMA both
+  ≥ z 4, or on rate-of-change plus one of them. Statistical hits also
+  need a per-metric practical deviation (`min_delta`).
+- Only clearly normal points (|z| < 2.5) update the baseline. After 6 h
+  without admissions the series re-baselines.
+- Flagged points within 5 min form an episode (≥ 2 points, or a single point
+  scoring ≥ 0.85).
+- `MetricAnomaly` carries the spec §6 fields: `metric`, `timestamp` (onset),
+  `value` (extreme), `baseline` (at onset), `severity`, `anomaly_score`
+  (0.5 at threshold, same mapping as the C library) and `related_metrics`
+  (same-cell episodes overlapping within 15 min), plus id, cell, node,
+  start/end, detectors and points.
+- Isolation Forest / DBSCAN (optional in spec §6) are not implemented.
+
 ### 3.3 Analytics and correlation — *(planned M4–M5)*
 
 ```python

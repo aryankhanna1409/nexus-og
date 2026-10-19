@@ -315,19 +315,62 @@ Per point, in time order (`detectors.evaluate_series`):
   start/end, detectors and points.
 - Isolation Forest / DBSCAN (optional in spec §6) are not implemented.
 
-### 3.3 Analytics and correlation — *(planned M4–M5)*
+### 3.3b Correlation engine (`backend/app/analytics/correlation.py`) — implemented (M5)
 
 ```python
-@dataclass(frozen=True) class MetricSeries: metric: str; cell_id: str | None; timestamps: np.ndarray; values: np.ndarray
-class Detector(Protocol):
-    def detect(self, series: MetricSeries) -> list[DetectorHit]: ...
-def detect_anomalies(series: Iterable[MetricSeries], cfg: DetectionConfig) -> list[AnomalySchema]
-def correlate(metric_anoms, call_anoms, events, topology, cfg) -> list[IncidentSchema]
+correlate(anomalies: Sequence[MetricAnomaly], events: Iterable[OperationalEvent] = (),
+          call_anomalies: Sequence[AnomalyDict] = (),            # from call_analyzer (C library)
+          series: Mapping[(cell, metric), (epochs, values)] | None = None,
+          config: CorrelationConfig | None = None) -> list[Incident]
 ```
 
-`AnomalySchema` matches spec §6 exactly; `IncidentSchema` matches spec §7 and
-adds `events: list[IncidentEventSchema]` (ordered, typed: deployment, metric_anomaly,
-call_anomaly, security, lifecycle).
+1. **Clustering.** Per cell, episodes within 15 min form a cluster. Clusters
+   on the same node merge when their onsets are within 15 min; different
+   nodes never merge.
+2. **Incident gate.** An incident needs ≥ 2 distinct symptom metrics and at
+   least one symptom of severity ≥ high. M4 bounds false positives to
+   low/medium, so coincidental noise never opens an incident. Measured: 0
+   incidents over 20 healthy days.
+3. **Candidate causes** (`SuspectedCause`, always `status: "hypothesis"`),
+   scored as `0.45·temporal + 0.35·mechanism + 0.2·topology`:
+   - *Temporal:* exp(−lead/30 min) for events up to 2 h before onset, 0.3
+     within 5 min after onset.
+   - *Mechanism:* half the share of the earliest symptoms (within 2 min of
+     onset) that the cause produces first, half the share of all symptoms it
+     explains downstream in the causal graph (`causal_graph.py`).
+   - *Topology:* 1.0 when the event targets the affected node or cell, 0.5
+     for symptom-only causes.
+   - Event-backed classes: `deployment_regression`, `configuration_change`,
+     `security_attack` (≥ 10 IDS events). Symptom-only classes:
+     `memory_exhaustion`, `traffic_overload`, `radio_degradation`,
+     `transport_fault`.
+   - Deployments and config changes on other elements are listed in
+     `excluded_candidates` with a reason.
+4. **Confidence** = top score × (0.6 + 0.4·chain consistency) × (0.9 if the
+   top two hypotheses are within 0.1), capped at 0.95.
+   - Chain consistency is the share of effects preceded by at least one
+     observed upstream cause.
+   - Caveats always state that correlation is not causation. They also flag
+     close calls, single candidates, symptom-only inference and order
+     violations.
+5. **Output.** An `Incident` carries the spec §7 fields (`incident_id`
+   `INC-YYYY-NNN`, `severity` LOW/MEDIUM/HIGH/CRITICAL, `start_time`,
+   `affected_cells`, `symptoms`, `events`, `suspected_causes`,
+   `confidence`). Also included:
+   - `affected_nodes` and `excluded_candidates`;
+   - `call_evidence` (C-library cell anomalies for the affected cells, plus
+     network-wide window anomalies);
+   - `causal_chain` (onset lags, plus the lagged cross-correlation of first
+     differences when series are supplied);
+   - `chain_consistency`, `caveats`, and `anomaly_ids`.
+6. **Timeline.** Changes on the affected topology from the look-back window,
+   the first 10 warning/error application logs during the incident, one
+   entry per symptom onset, and `incident_created` when the second symptom
+   appears.
+
+Not correlated into incidents: C-library caller and per-call anomalies (fraud
+patterns rather than network faults). They remain available from the C
+analysis result.
 
 ### 3.4 LLM provider and RCA tools — *(planned M7)*
 

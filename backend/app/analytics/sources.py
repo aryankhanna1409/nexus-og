@@ -13,6 +13,7 @@ from pathlib import Path
 
 import numpy as np
 
+from app.analytics.correlation import EventType, OperationalEvent
 from app.analytics.engine import MetricSeries
 from app.simulation.scenario import SimulationResult
 
@@ -44,3 +45,13 @@ def series_from_csv(path: Path) -> list[MetricSeries]:
     return [MetricSeries(metric, cell, nodes[cell], np.asarray(epochs[cell], dtype=np.int64),
                          np.asarray(values[(cell, metric)]))
             for (cell, metric) in sorted(values)]
+
+
+def events_from_simulation(result: SimulationResult) -> list[OperationalEvent]:
+    return [OperationalEvent.make(e.epoch, EventType(e.kind.value), e.source, e.severity.value,
+                                  e.message, e.node_id, e.cell_id, e.attributes)
+            for e in result.events]
+
+
+def series_lookup(series: list[MetricSeries]) -> dict[tuple[str, str], tuple[np.ndarray, np.ndarray]]:
+    return {(s.cell_id, s.metric): (s.epochs, s.values) for s in series}

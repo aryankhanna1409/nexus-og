@@ -163,7 +163,7 @@ no high/critical false positives. Measured over 20 seeds: 11 episodes in
 4,080 series-days (0.27 per 100), all low/medium. The test enforces the bound
 on 8 seeds (1,632 series-days).
 
-### M5 — Correlation engine `[ ]`
+### M5 — Correlation engine `[x]`
 
 Scope: `backend/app/analytics/correlation.py`. Groups metric anomalies, C-library
 call anomalies, deployment, security and application events into incidents
@@ -282,7 +282,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R8 | 5 | Nine incident types simulated | `app/simulation/incidents.py` | M3 | `test_each_incident_type[*]` (9 cases) | verified |
 | R9 | 6 | Interpretable anomaly detectors + anomaly schema | `app/analytics/` | M4 | `tests/test_analytics.py` (24 tests) | verified |
 | R10 | 6 | Optional ML detectors (Isolation Forest/DBSCAN) | `app/analytics/` | deferred | — | deferred (optional) |
-| R11 | 7 | Cross-source correlation → Incident object | `app/analytics/correlation.py` | M5 | `test_correlation.py` | planned |
+| R11 | 7 | Cross-source correlation → Incident object | `app/analytics/correlation.py` | M5 | `tests/test_correlation.py` (29 tests) | verified |
 | R12 | 8 | LLM RCA with structured tools; facts vs hypotheses | `app/rca/`, `app/llm/` | M7 | `test_rca_engine.py`, `test_rca_tools.py`, `test_rca_schema.py` | planned |
 | R13 | 9 | AI report (JSON/Markdown/HTML; PDF optional) | `app/reporting/` | M8 | `test_reporting.py` | planned |
 | R14 | 10 | Agent tools + OBSERVE…CLOSE loop | `app/agents/` | M9 | `test_agent_loop.py` | planned |
@@ -445,6 +445,36 @@ Entries record commands actually executed and their outcome.
     - removing both practical-delta gates → 1 failed. This mutation initially
       survived the original single-spike test, which did not isolate the
       gate. That test was replaced by a sustained sub-delta shift test.
+- 2026-10-19 — **M5** (correlation). Local: `make test` exit 0. C 2/2 + 2/2,
+  `py-test` **208 passed** (29 new), `py-test-asan` 201 + 7 skipped, mypy clean
+  (25 files). Container Python 3.12: **208 passed**, mypy clean.
+  - Seeded incident: one incident, INC-2026-001, CRITICAL, cells 101–104.
+    Top hypothesis `deployment_regression` scored 0.895 (next 0.675);
+    confidence 0.895; chain consistency 1.0. The pgw-3 hotfix is excluded
+    with a reason, and C-library call anomalies are attached for all four
+    cells.
+  - All 9 incident types: correct top cause class. Symptom-only causes
+    stay < 0.7 confidence.
+  - Defects found and fixed during development:
+    - Chain consistency counted jitter-before-loss as a violation, although
+      latency also drives jitter. Rule changed to "preceded by at least one
+      observed upstream cause".
+    - Symptom-only hypotheses used only the alphabetically first of several
+      simultaneous symptoms: radio degradation was blamed on a transport
+      fault, and interface and loss-burst incidents got no hypothesis.
+      Scoring now uses all symptoms within 2 min of onset plus downstream
+      explanatory coverage.
+    - A single candidate cause was penalised as a "close call".
+    - Background login noise flooded `excluded_candidates`.
+    - A 60-min look-back missed the 63-min-earlier distractor deployment
+      (now 2 h).
+    - Two low-severity false positives on one cell formed a LOW incident
+      (seed 0). Incidents now require a ≥ high symptom: 0 incidents over
+      20 healthy days.
+  - A test defect was fixed: the order-violation fixture was consistent
+    under the corrected rule.
+  - Mutation checks (scratch copy), all detected: ignoring topology
+    (6 tests failed), merging across nodes (1), removing temporal decay (1).
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

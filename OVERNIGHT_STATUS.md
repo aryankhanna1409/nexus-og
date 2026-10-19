@@ -10,7 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M5 — Correlation engine** (depends on M2 ✅, M4 ✅).
+Next milestone: **M6 — Persistence, API core, auth and audit** (depends on M5 ✅).
 
 ## Milestones
 
@@ -19,7 +19,8 @@ Next milestone: **M5 — Correlation engine** (depends on M2 ✅, M4 ✅).
 | M1 C library | done before this run | PASS | `823a5b7` |
 | M2 Python binding + generator | done before this run | PASS WITH DOCUMENTED LIMITATIONS | `7b748a2` |
 | M3 Telemetry simulator | done | PASS | `7d1edf6` |
-| M4 Anomaly detection | done | PASS | (this commit; see git log) |
+| M4 Anomaly detection | done | PASS | `8172e7c` |
+| M5 Correlation engine | done | PASS | (this commit; see git log) |
 
 ### M3 — Network telemetry simulation and seeded incidents
 
@@ -51,3 +52,19 @@ Next milestone: **M5 — Correlation engine** (depends on M2 ✅, M4 ✅).
 - False-positive bound: ≤ 1 per 100 series-days (measured 0.27).
 - Limitations: Isolation Forest/DBSCAN not implemented (optional). A
   permanent level shift is reported until the 6 h re-baseline.
+
+### M5 — Event correlation and incident management
+
+- Implementation: `backend/app/analytics/correlation.py`, `causal_graph.py`,
+  event adapters in `sources.py`.
+- Commands: `make test`; `scripts/container_py312_test.sh`; 3 mutation runs;
+  a 20-seed healthy-day incident count.
+- Results: local 208 passed, ASan run 201 + 7 skipped, C 2/2 + 2/2, mypy clean.
+  Container 3.12: 208 passed.
+- Seeded: 1 CRITICAL incident; deployment hypothesis 0.895; distractor
+  excluded; 0 incidents on 20 healthy days.
+- Limitations: caller/per-call C anomalies are not turned into incidents.
+  Overlapping independent faults on the *same* node with near-simultaneous
+  onset would merge into one incident.
+- Note: the working tree shows the stray `tatus --short` file deleted. That
+  deletion was not made by this run and is left unstaged.

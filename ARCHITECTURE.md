@@ -64,15 +64,15 @@ flowchart TB
 |---|---|---|---|
 | Call analyzer library | `c-library/` | C11 | Parse/validate CDR CSV, aggregate, detect call-level outliers |
 | Binding | `backend/call_analyzer/` | Python (ctypes) | Load `.so`, marshal structs → dicts, map errors to exceptions |
-| Telemetry simulator | `backend/app/simulation/` | Python | Causal time-series model, incident injection, event streams *(planned M3)* |
-| Analytics | `backend/app/analytics/` | Python/numpy | Detectors, scoring, correlation into incidents *(planned M4–M5)* |
-| LLM layer | `backend/app/llm/` | Python | Provider abstraction *(planned M7)* |
-| RCA engine | `backend/app/rca/` | Python | Tool-driven investigation loop, schema-validated output *(planned M7)* |
-| Reporting | `backend/app/reporting/` | Python/Jinja2 | JSON/Markdown/HTML reports *(planned M8)* |
-| DevSecOps agent | `backend/app/agents/` | Python | State machine, allowlisted tools, policy, approvals *(planned M9)* |
-| API | `backend/app/api/` | FastAPI | REST + OpenAPI, auth, RBAC, rate limits *(planned M6/M10)* |
-| Database | `backend/alembic/` | PostgreSQL | Relational entities + JSON evidence *(planned M6)* |
-| Frontend | `frontend/` | React/TS | NOC dashboard *(planned M12)* |
+| Telemetry simulator | `backend/app/simulation/` | Python | Causal time-series model, incident injection, event streams |
+| Analytics | `backend/app/analytics/` | Python/numpy | Detectors, scoring, correlation into incidents |
+| LLM layer | `backend/app/llm/` | Python | Provider abstraction |
+| RCA engine | `backend/app/rca/` | Python | Tool-driven investigation loop, schema-validated output |
+| Reporting | `backend/app/reporting/` | Python/Jinja2 | JSON/Markdown/HTML reports |
+| DevSecOps agent | `backend/app/agents/` | Python | State machine, allowlisted tools, policy, approvals |
+| API | `backend/app/api/` | FastAPI | REST + OpenAPI, auth, RBAC, rate limits |
+| Database | `backend/alembic/` | PostgreSQL | Relational entities + JSON evidence |
+| Frontend | `frontend/` | React/TS | NOC dashboard |
 
 ## 2. End-to-end data flow
 
@@ -652,10 +652,43 @@ ignored. Injection- and traversal-shaped parameters are rejected by
 pattern validation (tests cover SQL fragments, `<script>`, `../`, encoded
 `..` and NUL). OpenTelemetry (optional in spec §21) is not implemented.
 
-### 3.8 Frontend — *(planned M12)*
+### 3.8 Frontend (`frontend/`) — implemented (M12)
 
-React/TS SPA served by nginx; talks only to the REST API through a typed
-client in `frontend/src/services/api.ts` whose types mirror the Pydantic schemas.
+Stack: React 18.3, TypeScript 5.6 (strict), Vite 5.4, Tailwind 3.4, Recharts
+2.13, React Router 6.28; Vitest + Testing Library. Exact versions are pinned
+in `package.json` and `package-lock.json`.
+
+- **Auth:** the API token is entered on the sign-in page, validated against
+  the API, and stored only in `sessionStorage`. Every request uses
+  `Authorization: Bearer`. Path parameters are URL-encoded.
+- **Data:** all views use the typed client `src/services/api.ts`; there is no
+  hard-coded data outside the test fixtures. Types in `src/types/api.ts`
+  mirror the Pydantic models.
+- **Pages (spec §13):** Dashboard, Network Overview, Call Analytics,
+  Anomalies, Incidents, Incident detail, Root Cause Analysis, AI Reports,
+  DevSecOps Agent, Security and Audit Log.
+  - The Dashboard answers the six questions of spec §25 using health score,
+    incident, RCA, KPI, chart, agent and verification panels.
+  - The incident detail page has the spec §14 timeline, symptoms,
+    correlation hypotheses with caveats, the RCA explanation chain, and
+    actions (investigate, report, agent).
+  - The agent page shows rationale, risk class and approve/deny/execute
+    controls; the server enforces all policy.
+- **Report HTML** is shown in an `<iframe sandbox>` (scripts disabled) from
+  the server's escaped HTML.
+- **Backend support:** `GET /api/network/overview` (viewer) returns the
+  health score and its breakdown, KPI current vs baseline, per-cell status
+  and affected cells per incident. The formula is in its docstring.
+- **Build/test without host Node:** `make frontend-test` runs `npm ci`,
+  `tsc`, Vitest (10 tests) and `vite build` in `node:22-alpine`.
+- **Docker:** `frontend/Dockerfile` runs Vitest and the build in Node, then
+  serves `dist` with nginx 1.27. It proxies only `/api/` to the backend,
+  falls back to `index.html` for SPA routes, and sets a restrictive CSP and
+  security headers. Published on `127.0.0.1:${FRONTEND_PORT:-8080}`.
+- **Browser check:** `SMOKE_UI_CHECK=1 make docker-smoke` runs
+  `scripts/ui_check.mjs` in the Playwright container. It signs in, visits
+  all pages, fails on page errors, 5xx API responses or error alerts, and
+  saves screenshots.
 
 ## 4. Trust boundaries
 
@@ -671,7 +704,7 @@ Local development (WSL2):
 - C: `make c-build`, `make c-test`, `make c-test-asan` (CMake out-of-tree builds under `c-library/build*`).
 - Python: `make py-venv` (pinned dev tools in `backend/requirements-dev.txt`), `make py-test`, `make py-typecheck`; the binding finds the locally built `.so`.
 - Data: `make call-logs SEED=42` writes `data/call_logs/call_logs.csv` + manifest (git-ignored, reproducible).
-- Frontend: Node is not installed in WSL; use the `node` container (`make frontend-test`) *(planned)*.
+- Frontend: Node is not installed in WSL; use the `node` container (`make frontend-test`).
 
 Docker (`docker compose up --build`) — implemented M11 (backend, PostgreSQL, Redis):
 
@@ -686,7 +719,7 @@ make docker-smoke           # isolated build + API smoke test + teardown (does n
 | `postgres` | `postgres:16` | volume `pgdata`, `pg_isready` healthcheck |
 | `redis` | `redis:7` | no persistence; rate-limit store; `redis-cli ping` healthcheck |
 | `backend` | `backend/Dockerfile` (context: repo root) | stage 1 builds libcallanalyzer with CMake **and runs ctest during the build**; stage 2 is `python:3.12-slim` with the `.so` in `/usr/local/lib`, git (agent sandbox), the pinned requirements (including the LLM SDKs), non-root user `aegis`, volume `/data`. Entrypoint: print library version → `alembic upgrade head` → optional bootstrap of the seeded incident (`AEGIS_BOOTSTRAP_DEMO`, default true in compose, idempotent) → uvicorn on :8000. HTTP healthcheck on `/api/health`. Published on `127.0.0.1:${BACKEND_PORT:-8000}` only. |
-| `frontend` | *(planned M12)* | nginx serving the SPA and proxying `/api` |
+| `frontend` | `frontend/Dockerfile` | node:22 build (runs Vitest) → nginx:1.27 serving the SPA, proxying `/api` only; `127.0.0.1:${FRONTEND_PORT:-8080}` |
 
 The compose file passes only an explicit list of variables to the backend.
 `.env` is used for substitution and never copied into the image

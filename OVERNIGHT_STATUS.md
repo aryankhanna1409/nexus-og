@@ -10,7 +10,7 @@ empty file named `tatus --short`. It was left untouched.
 
 ## Resume point
 
-Next milestone: **M12 — React dashboard** (depends on M11 ✅). Frontend sources are being written under `frontend/`.
+Next milestone: **M13 — make demo, E2E tests, README, final audit** (depends on M12 ✅).
 
 ## Milestones
 
@@ -26,8 +26,8 @@ Next milestone: **M12 — React dashboard** (depends on M11 ✅). Frontend sourc
 | M8 Reporting | done | PASS (PDF optional, not implemented) | `90232af` |
 | M9 DevSecOps agent | done | PASS (rollback simulated by design) | `77184fd` |
 | M10 Hardening + observability | done | PASS (OpenTelemetry not implemented) | `08f26c3` |
-| M11 Docker | done | PASS (frontend service pending M12) | (this commit; see git log) |
-| M12 Dashboard | not started | — | — |
+| M11 Docker | done | PASS | `3ace7ba` |
+| M12 Dashboard | done | PASS | (this commit; see git log) |
 | M13 Demo/E2E/audit | not started | — | — |
 
 ### M3 — Network telemetry simulation and seeded incidents
@@ -158,3 +158,16 @@ Next milestone: **M12 — React dashboard** (depends on M11 ✅). Frontend sourc
   + 3 skipped, ASan 340 + 10 skipped, mypy clean. Container 3.12: 347 + 3.
 - Defect fixed: pytest missing from the runtime image, which led the agent
   to misdiagnose (see the plan log).
+
+### M12 — React dashboard
+
+- Implementation: `frontend/` (React/TS/Vite/Tailwind/Recharts; 11 pages;
+  typed API client; token sign-in in sessionStorage; sandboxed report
+  iframe), `frontend/Dockerfile` + `nginx.conf`, compose `frontend`
+  service, `GET /api/network/overview`, `make frontend-test`,
+  `scripts/ui_check.mjs` (Playwright) wired into `docker_smoke.sh`.
+- Results: Vitest 10 passed; Python 349 + 3 skipped (local and 3.12);
+  Docker smoke and browser check passed on all 11 routes.
+- Limitations: one page bundle per vendor chunk, no code-splitting per route;
+  no frontend end-to-end tests of the approval flow in the browser (covered by
+  API tests).

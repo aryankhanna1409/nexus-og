@@ -7,7 +7,8 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORK="$(mktemp -d)"
 PROJECT="aegis-smoke"
 PORT="${SMOKE_PORT:-18000}"
-export BACKEND_PORT="$PORT"
+UI_PORT="${SMOKE_UI_PORT:-18080}"
+export BACKEND_PORT="$PORT" FRONTEND_PORT="$UI_PORT"
 cleanup() {
   docker compose -p "$PROJECT" --env-file "$WORK/env" -f "$REPO_ROOT/docker-compose.yml" down -v --remove-orphans >/dev/null 2>&1 || true
   rm -rf "$WORK"
@@ -46,5 +47,18 @@ print("agent:", d["status"], [(a["tool"], a["status"]) for a in d["actions"]])
 pending = [a["tool"] for a in d["actions"] if a["status"] == "awaiting_approval"]
 assert d["status"] == "awaiting_approval" and pending == ["apply_patch"], "agent did not reach the patch approval step"'
 echo "audit chain: $(api admin /api/audit/verify)"
+for _ in $(seq 1 30); do curl -fsS "http://127.0.0.1:$UI_PORT/healthz" >/dev/null 2>&1 && break; sleep 2; done
+curl -fsS "http://127.0.0.1:$UI_PORT/" | grep -q '<div id="root">' && echo "frontend: index served"
+echo "frontend proxy: $(curl -fsS -H "Authorization: Bearer $(token viewer)" "http://127.0.0.1:$UI_PORT/api/network/overview" | python3 -c 'import json,sys; d=json.load(sys.stdin); print("health_score", d["health_score"], "active_incidents", d["active_incidents"])')"
+code="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$UI_PORT/metrics")"
+echo "frontend /metrics -> $code (served by the SPA fallback, not proxied)"
+curl -fsS "http://127.0.0.1:$UI_PORT/metrics" | grep -q "aegis_http_requests_total" && { echo "metrics leaked through proxy"; exit 1; } || true
 compose logs backend 2>&1 | grep -E "libcallanalyzer|Running upgrade|bootstrap pipeline completed" | head -5
+if [ "${SMOKE_UI_CHECK:-0}" = "1" ]; then
+  # Browser check of every dashboard page (Playwright container on the host network).
+  mkdir -p "${SMOKE_SCREENSHOTS:-$WORK/shots}"
+  docker run --rm --network host -v "$REPO_ROOT/scripts":/check -v "${SMOKE_SCREENSHOTS:-$WORK/shots}":/shots \
+    -w /tmp mcr.microsoft.com/playwright:v1.49.1-noble \
+    sh -c "npm init -y >/dev/null && npm i --no-audit --no-fund playwright@1.49.1 >/dev/null && cp /check/ui_check.mjs . && node ui_check.mjs http://127.0.0.1:$UI_PORT '$(token operator)' /shots"
+fi
 echo "SMOKE TEST PASSED"

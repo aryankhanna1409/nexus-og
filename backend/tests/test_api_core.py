@@ -281,3 +281,25 @@ def test_migrate_helper_is_idempotent(tmp_path: Path) -> None:
     url = f"sqlite:///{tmp_path / 'x.db'}"
     migrate(url)
     migrate(url)
+
+
+def test_network_overview(api: ApiHarness) -> None:
+    body = api.get("/api/network/overview").json()  # type: ignore[attr-defined]
+    assert body["active_incidents"] >= 1 and body["anomaly_count"] == 36
+    penalties = sum(b["penalty"] for b in body["health_breakdown"])
+    assert body["health_score"] == max(0, 100 - penalties)
+    assert any("CRITICAL incident INC-2026-001" in b["reason"] for b in body["health_breakdown"])
+    degraded = {c["cell_id"] for c in body["cells"] if c["status"] == "degraded"}
+    assert degraded == set(LEAK_CELLS) and len(body["cells"]) == 12
+    kpis = {k["metric"]: k for k in body["kpis"]}
+    assert kpis["latency_ms"]["current"] > 3 * kpis["latency_ms"]["baseline"]
+    assert kpis["throughput_mbps"]["bad_direction"] == "down"
+    assert body["affected_cells_by_incident"]["INC-2026-001"] == LEAK_CELLS
+
+
+def test_network_overview_healthy_run(tmp_path: Path) -> None:
+    harness = make_harness(tmp_path)
+    harness.post("/api/pipeline/run", json={"scenario": "healthy", "minutes": 120})
+    body = harness.get("/api/network/overview").json()  # type: ignore[attr-defined]
+    assert body["health_score"] == 100 and body["health_breakdown"] == [] and body["active_incidents"] == 0
+    assert all(c["status"] == "ok" for c in body["cells"])

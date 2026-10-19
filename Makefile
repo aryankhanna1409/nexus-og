@@ -12,6 +12,8 @@ VENV_STAMP   := $(VENV)/.requirements-installed
 SEED         ?= 42
 
 
+
+.PHONY: frontend-test
 .PHONY: env docker-build docker-up docker-down docker-smoke
 .PHONY: help c-build c-test c-test-asan py-venv py-test py-test-asan py-typecheck call-logs network-data container-test test clean
 
@@ -31,6 +33,7 @@ help:
 	@echo "  docker-up     docker compose up --build -d"
 	@echo "  docker-smoke  Build, start and smoke-test the Docker stack, then stop it"
 	@echo "  docker-down   Stop the stack (keeps volumes)"
+	@echo "  frontend-test Type-check, test and build the dashboard in a node:22 container"
 	@echo "  test          Run all available test suites"
 	@echo "  clean         Remove build artifacts and caches"
 
@@ -80,6 +83,11 @@ call-logs:
 network-data: py-venv
 	$(VENV_PY) scripts/generate_network_metrics.py --scenario seeded --seed 7 --out-dir data
 
+# Node is not required on the host: the dashboard is checked inside node:22-alpine.
+frontend-test:
+	docker run --rm -u "$$(id -u):$$(id -g)" -e HOME=/tmp -v "$(CURDIR)/frontend":/app -w /app node:22-alpine \
+		sh -c 'npm ci --no-audit --no-fund >/dev/null && npx tsc -b --noEmit && npx vitest run && npm run build'
+
 env:
 	$(PYTHON) scripts/init_env.py
 
@@ -98,7 +106,7 @@ docker-smoke:
 container-test:
 	scripts/container_py312_test.sh
 
-test: c-test c-test-asan py-test py-test-asan py-typecheck
+test: c-test c-test-asan py-test py-test-asan py-typecheck frontend-test
 
 clean:
 	rm -rf $(C_BUILD) $(C_BUILD_ASAN)

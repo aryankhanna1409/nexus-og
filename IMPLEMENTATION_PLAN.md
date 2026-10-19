@@ -233,7 +233,7 @@ migrations on start; healthchecks. Acceptance: `docker compose up --build` from 
 clean clone brings services to healthy and `/api/health` reports DB, Redis and
 C-library status.
 
-### M12 — React dashboard `[ ]`
+### M12 — React dashboard `[x]`
 
 React + TypeScript + Vite + Tailwind + Recharts; pages per spec §13; dark NOC
 aesthetic; incident timeline; RCA explainability panel; agent approval UI.
@@ -288,13 +288,13 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R14 | 10 | Agent tools + OBSERVE…CLOSE loop | `app/agents/` | M9 | `tests/test_agent.py` (35 tests) | verified |
 | R15 | 11 | Scenarios: vulnerable dependency, failed CI, production anomaly | `app/agents/planner.py` | M9 | `test_vulnerable_dependency_flow`, `test_failed_ci_flow`, `test_production_anomaly_*` | verified (rollback is simulated) |
 | R16 | 12 | Action risk classes, approval gating, rationale, logging | `app/agents/policy.py`, `service.py` | M9 | `test_policy_table`, `test_blocked_action_never_executes`, `test_unapproved_action_cannot_execute_via_service`, `test_initiator_cannot_approve_own_action` | verified |
-| R17 | 13, 25 | Dashboard pages, KPI cards, charts, NOC aesthetic | `frontend/` | M12 | Vitest component tests + manual check | planned |
-| R18 | 14 | Interactive incident timeline | `frontend/`, `IncidentEvent` API | M12 | `Timeline.test.tsx`, API test | planned |
+| R17 | 13, 25 | Dashboard pages, KPI cards, charts, NOC aesthetic | `frontend/` | M12 | Vitest (10 tests) + Playwright browser check of all 11 routes against the Docker stack + screenshot review | verified |
+| R18 | 14 | Interactive incident timeline | `frontend/src/components/IncidentTimeline.tsx`, incident API | M12 | `IncidentTimeline` ordering test, browser check of `/incidents/INC-2026-001` | verified |
 | R19 | 15 | Schemas for 11 entities, Pydantic at API | `app/models`, `app/schemas/entities.py` | M6 | `tests/test_api_core.py` (responses validated through the schemas) | verified |
 | R20 | 16 | REST API endpoints + OpenAPI | `app/api/` | M6–M9 | `tests/test_api_core.py` (M6 endpoints); RCA/report/agent endpoints pending | partial (M6 verified) |
 | R21 | 17 | PostgreSQL, migrations, relational tables + JSON evidence | `alembic/`, `app/models` | M6 | `test_sqlite_migration_*`, `test_postgres_migration_and_pipeline` (run against postgres:16) | verified |
 | R22 | 18 | Monorepo structure | repo | all | structure check in self-audit | in progress |
-| R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, `backend/Dockerfile` | M11, M12 | `scripts/docker_smoke.sh` (backend/postgres/redis verified; frontend pending M12) | partial (M11 verified) |
+| R23 | 19 | `docker compose up --build` (frontend, backend, postgres, redis); C lib built in backend image | `docker-compose.yml`, `backend/Dockerfile`, `frontend/Dockerfile` | M11, M12 | `scripts/docker_smoke.sh` with `SMOKE_UI_CHECK=1` (all four services) | verified |
 | R24 | 20 | LLM provider abstraction, env config, no committed keys | `app/llm/` | M7 | `test_provider_selection`, Anthropic/OpenAI request-shape and error-mapping tests | verified offline; real API calls not executed (no key) |
 | R25 | 21 | Structured logs, request/agent/incident IDs, metrics, audit | `app/observability/`, `app/security/middleware.py` | M6, M10 | `tests/test_security.py` (logging/metrics tests) | verified (OpenTelemetry not implemented) |
 | R26 | 22 | C, Python, frontend, integration tests | all | every milestone, M13 | `make test` | planned |
@@ -558,6 +558,19 @@ Entries record commands actually executed and their outcome.
   - Regression after the fixes: `make test` exit 0 (**347 passed, 3 skipped**;
     ASan 340 + 10 skipped; mypy clean, 86 files). Container Python 3.12:
     **347 passed, 3 skipped**.
+- 2026-10-19 — **M12** (dashboard). `make test` exit 0, now including
+  `frontend-test` (tsc strict, **Vitest 10 passed**, vite build). Python **349
+  passed, 3 skipped** (2 new overview tests); ASan 342 + 10 skipped; mypy clean.
+  Container Python 3.12: **349 passed, 3 skipped**.
+  `SMOKE_UI_CHECK=1 scripts/docker_smoke.sh`: all four services healthy;
+  frontend proxy returned real overview data; `/metrics` not proxied; the
+  Playwright check (Chromium) signed in and rendered all 11 routes with live
+  data and no page errors, 5xx responses or error alerts. **UI CHECK PASSED.**
+  - The first frontend run had 3 typing/setup issues (fetch mock signature,
+    missing `@types/node`, no `ResizeObserver` in jsdom) and 1 test defect
+    (a duplicate "85%" match); all fixed. A screenshot review led to
+    rounding tooltip values and labelling KPI cards "all-cell mean, last
+    30 min".
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

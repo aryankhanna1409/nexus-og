@@ -1,7 +1,7 @@
 """initial schema
 
 Revision ID: 0001
-Revises: 
+Revises: (none)
 Create Date: 2026-10-19 18:19:40.457242
 """
 from collections.abc import Sequence

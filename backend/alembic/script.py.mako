@@ -1,7 +1,7 @@
 """${message}
 
 Revision ID: ${up_revision}
-Revises: ${down_revision | comma,n}
+Revises:${" " + str(down_revision) if down_revision else " (none)"}
 Create Date: ${create_date}
 """
 from collections.abc import Sequence

@@ -18,7 +18,7 @@ Authoritative inputs: `PROJECT_SPEC.md` (functional spec) and `CLAUDE.md`
 | cmake / make | 4.2.3 / 4.4.1 ✅ | |
 | clang, clang-tidy, cppcheck, valgrind, ninja | ❌ not installed | ASan/UBSan/LSan cover memory checking; static analysers are optional |
 | python3 | 3.14.4 ✅ | `venv`, `ensurepip`, `ctypes` available; `pip install` into a venv works (network OK) |
-| Python libs (fastapi, pydantic, numpy, …) | ❌ not installed system-wide | Installed per-project into `backend/.venv` |
+| Python libs (fastapi, pydantic, numpy, …) | ❌ not installed system-wide | Installed per-project into `backend/.venv` (M2: pytest 9.1.1, mypy 2.4.0 only; the binding has no runtime dependencies) |
 | node | ❌ **not installed in WSL** | `npm` on PATH resolves to the Windows install (`/mnt/c/Program Files/nodejs/npm`) and does not run. Frontend will be built/tested inside a `node` Docker image unless a native Node is installed |
 | docker | 29.7.2 (Docker Desktop) ✅ | daemon reachable, `docker pull python:3.12-slim` succeeded |
 | docker compose | v5.3.1 ✅ | |
@@ -74,7 +74,7 @@ graph LR
 M1 and M3 have no dependency on each other and may proceed in parallel.
 Testing is part of every milestone (spec Phase 13 is distributed, not deferred).
 
-### M1 — C call-analysis library `[x]` (core complete; Python-side verification in M2)
+### M1 — C call-analysis library `[x]`
 
 Scope: `c-library/` with `include/call_analyzer.h`, `src/{parser,analyzer,statistics,anomaly,utils}.c`,
 `tests/test_call_analyzer.c`, `CMakeLists.txt`, `README.md`; root `Makefile` targets.
@@ -98,7 +98,7 @@ sweep, ASan/LSan), statistics (hand-computed expected values), per-cell,
 failure-code, time-window, caller, anomaly detection (seeded bad cell detected,
 clean data yields no cell anomalies), empty input, integer-overflow guards.
 
-### M2 — Python binding and call-log generator `[ ]`
+### M2 — Python binding and call-log generator `[x]` (accepted after audit, 2026-10-19 — PASS WITH DOCUMENTED LIMITATIONS)
 
 Scope: `backend/call_analyzer/` (ctypes wrapper), `scripts/generate_call_logs.py`.
 `analyze_call_log(path) -> dict` returning total calls, success/drop rate,
@@ -111,6 +111,18 @@ for a given seed and its seeded faulty cell is detected by the C library.
 
 Tests: binding round-trip, exception mapping, missing library error message,
 generator determinism, generator→C anomaly detection.
+
+Audit additions (`backend/tests/test_binding_abi_and_ownership.py`):
+- Per-field ABI probe. It compiles `offsetof`/`sizeof`/`_Generic` against the
+  header and checks every field's name, order, offset, size and type class
+  for all 11 mirrors.
+- Reference comparison covering every field of every anomaly type.
+- Spies on native pointer ownership (success, C failure midway, Python
+  exception during conversion, parse failure).
+- int64 and double overflow guards, and discovery edge cases.
+- Glibc heap test tightened to 16 KiB per 100 calls, with a sanity check
+  for each of the six free functions.
+- 50-seed generator acceptance test.
 
 ### M3 — Network telemetry simulator and seeded incidents `[ ]`
 
@@ -225,9 +237,9 @@ self-audit checklist of spec §31 executed and recorded.
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| ctypes struct layout drift between `call_analyzer.h` and Python mirrors | Silent memory corruption | Library exports `call_analyzer_struct_sizes()`; binding asserts sizes at load time; tests compare. |
-| Shared-library discovery across local / Docker | Import failure | Explicit `CALL_ANALYZER_LIB` env var, then known build paths; clear error. |
-| Python 3.14 (local) vs 3.12 (image) wheel availability | Install failures | Pin compatible versions; run tests in both. |
+| ctypes struct layout drift between `call_analyzer.h` and Python mirrors | Silent memory corruption | **Closed in tests (M2 audit):** the per-field ABI probe compares name/order/offset/size/type class for every field. Residual: the *runtime* load check is size-only (no offset export in the C ABI), so a library rebuilt from a different header without re-running the tests would only be caught if its struct sizes change. Enum fields are accepted as signed or unsigned int (gcc makes them unsigned; values are 0–7). |
+| Shared-library discovery across local / Docker | Import failure | **Mitigated (M2):** env var, then local build, then `/usr/local/lib`, always by absolute path; verified via `/proc/self/maps` locally and in a Python 3.12 container. |
+| Python 3.14 (local) vs 3.12 (image) wheel availability | Install failures | Pin compatible versions; run tests in both. M2 verified on both (see log); revisit when FastAPI/numpy etc. are added. |
 | SQLite (demo) vs Postgres (prod) dialect differences | Migration/query bugs only seen in Docker | Portable types (D4); run migration + API tests against Postgres container in M6/M11. |
 | Telemetry realism vs detector tuning | Detectors over-fitted to simulator | Test detectors on generic synthetic series, not only simulator output; document thresholds. |
 | LLM nondeterminism and malformed tool calls | Flaky tests, unsafe actions | Mock provider for tests; Pydantic validation of every tool call; step budget; real-provider tests opt-in. |
@@ -250,7 +262,7 @@ verifies the requirement once implemented. Status reflects executed tests only.
 | R3 | 3 | Aggregations: drop, duration, cell, signal, failure code, time window, caller/callee | `statistics.c`, `analyzer.c` | M1 | `statistics_*`, `cell_statistics`, `failure_code_statistics`, `time_window_statistics`, `caller_statistics` | verified |
 | R4 | 3 | Outlier detection | `anomaly.c` | M1 | `anomaly_*` cases | verified |
 | R5 | 3 | Memory safety, NULL handling, overflow, leaks; `-Wall -Wextra -Wpedantic`; ASan/UBSan | `c-library/` | M1 | `make c-test-asan`, `oom_all_operations`, `null_arguments` | verified |
-| R6 | 4 | Python binding, `analyze_call_log()` returning structured dict | `backend/call_analyzer/` | M2 | `backend/tests/test_call_analyzer_binding.py` | planned |
+| R6 | 4 | Python binding, `analyze_call_log()` returning structured dict | `backend/call_analyzer/` | M2 | `backend/tests/test_call_analyzer_binding.py`, `test_generate_call_logs.py` | verified (py3.14 local, py3.12 container) |
 | R7 | 5 | Correlated network telemetry simulator | `app/simulation/` | M3 | `test_simulator_correlation.py` | planned |
 | R8 | 5 | Nine incident types simulated | `app/simulation/incidents.py` | M3 | `test_incident_injectors.py` | planned |
 | R9 | 6 | Interpretable anomaly detectors + anomaly schema | `app/analytics/` | M4 | `test_detectors.py`, `test_anomaly_schema.py` | planned |
@@ -296,6 +308,94 @@ Entries record commands actually executed and their outcome.
   `free` in `calculate_cell_statistics` made the ASan run fail with a
   LeakSanitizer report; changing the drop-rate denominator made
   `statistics_small`, `cell_statistics` and `time_window_statistics` fail.
+- 2026-10-19 — M2, local (WSL2, Python 3.14.4, gcc 15.2): `make test` exit 0:
+  C ctest 2/2 + ASan ctest 2/2 passed; `pytest` **91 passed**, 0 skipped
+  (10.4 s); `mypy --strict` (binding + generator): no issues.
+  - Library path: with `CALL_ANALYZER_LIB` unset, loaded
+    `c-library/build/libcallanalyzer.so.1.0.0` and that was the only
+    `libcallanalyzer` mapping in `/proc/self/maps`. The full suite was rerun from
+    an unrelated cwd with `CALL_ANALYZER_LIB` pointing to a relocated copy:
+    91 passed, and only the copy was mapped.
+  - Memory: with libasan+libubsan preloaded and the ASan-built library,
+    88 passed (3 deselected: two need glibc `mallinfo2`, which ASan replaces,
+    and one matched the `-k "not leak"` filter by name). No sanitizer reports.
+    A deliberate double free through ctypes was caught by ASan, confirming the
+    sanitizer was active. A glibc-heap leak test (100 calls < 1 MB growth)
+    passed. Its sanity twin (free_call_records disabled) detected > 10 MB growth.
+  - Generator over 50 seeds (manual run): faulty CELL-107 flagged for drop rate
+    50/50 and packet loss 50/50, low signal 49/50; no other cell ever flagged;
+    healthy baseline produced 0 anomalies in 50/50 seeds.
+  - `make test` initially failed: the venv rule's `touch` targeted
+    `bin/python`, a symlink to the system interpreter (permission denied, no
+    change made). Fixed with a stamp file.
+- 2026-10-19 — M2, container (`python:3.12-slim`: Python 3.12.15, gcc 14.2.0,
+  cmake 3.31.6, glibc 2.41; repo mounted read-only, copied without host build
+  dirs): C library built with `-Werror` with no warnings, ctest 2/2 passed,
+  installed to `/usr/local/lib`. With no env var the binding loaded
+  `/usr/local/lib/libcallanalyzer.so.1.0.0`: **91 passed**. With
+  `CALL_ANALYZER_LIB=/tmp/cbuild/libcallanalyzer.so`: **91 passed**. mypy:
+  no issues. Generator seed-42 SHA-256 identical to the host 3.14 output
+  (69e6f432…ee167).
+- M2 not verified: non-glibc platforms (musl/macOS); loading the library from
+  multiple threads concurrently (load is lock-protected but untested);
+  inputs of millions of rows through the binding.
+- 2026-10-19 — **M2 acceptance audit.** Baseline before changes: `make test` exit 0,
+  91 passed, mypy clean; `git diff 823a5b7 -- c-library` empty.
+  - Defects found and fixed (binding/tests only, C library untouched):
+    - D1: `window_seconds` outside int64 was wrapped silently by ctypes. For
+      example `2**64+300` was accepted and analysed as 300 while the result
+      reported `18446744073709551916`. Now a ValueError. The int64 extremes
+      still reach C and get `InvalidArgumentError`.
+    - D2: the glibc heap leak test (1 MB threshold) caught only 2 of the 6
+      possible missing frees. Measured growth over 100 calls with each free
+      skipped: cells 168,736 B, codes 25,824 B, windows 197,536 B, anomalies
+      429,072 B, callers 20.7 MB, records > 10 MB. Noise was ≤ 5,056 B
+      (3 runs × 8 samples). The threshold is now 16 KiB, with a sanity check
+      per free function (6/6 detected). Also added deterministic
+      ownership-spy tests.
+    - D3: `_suspicious_windows` would substitute 0 calls / 0.0 drop rate if
+      C returned a window anomaly without matching window statistics. It now
+      raises `CallAnalyzerError`.
+    - D4: the ad-hoc ASan run used `-k "not leak"`, which also deselected
+      the unrelated `test_errors_do_not_leak_or_corrupt_state`. Replaced by
+      `make py-test-asan`: the heap tests skip themselves under ASan with a
+      stated reason, and no `-k` filter is used.
+    - D5: the ABI gap. `CallAnomaly`, `AnomalyConfig` and `ParseOptions`
+      fields and `FailureCodeStatistics.outcome` had no field-level
+      verification. Closed with the compiled ABI probe, a C-defaults read-back
+      and the anomaly reference.
+    - D6: the "50-seed" generator result was a manual run, not part of the
+      suite. It is now `test_detection_rates_over_50_seeds`.
+  - Mutation checks (scratch copy, not kept). Each of these 7 mutations made
+    the suite fail: swapping `CallAnomaly.window_start`/`window_end` (8 tests
+    failed), swapping `sample_size`/`record_index` (8), swapping
+    `AnomalyConfig.min_calls_per_cell`/`min_calls_per_caller` (2), changing
+    `CallStatistics.average_signal` from double to int64 (6), removing
+    `free(out)` in `_collect_array` (7), removing the int64 check (4), and
+    taking suspicious-window severity from the lowest-scored anomaly (2).
+  - Two new tests failed on first run because of test defects, not binding
+    defects, and both were fixed: a `defaultdict` emptiness assertion, and a
+    fixture burst at 443 calls vs a 2× median of 446. C correctly did not flag
+    it; the burst was enlarged.
+  - Final local run (Python 3.14.4, gcc 15.2): `make test` exit 0. ctest 2/2,
+    ASan ctest 2/2, `py-test` **124 passed**, `py-test-asan` **117 passed,
+    7 skipped** (the glibc heap tests; reason printed), mypy: no issues.
+  - Final container run (`python:3.12-slim`: Python 3.12.15, gcc 14.2.0,
+    glibc 2.41): ctest 2/2. Default discovery loaded
+    `/usr/local/lib/libcallanalyzer.so.1.0.0`: **124 passed**. With
+    `CALL_ANALYZER_LIB`: **124 passed**. ASan ctest 2/2. Python against the
+    ASan build: **117 passed, 7 skipped**. mypy clean. Seed-42 SHA-256
+    identical to the host.
+  - Remaining limitations (documented, not defects):
+    - `CA_ERR_NULL_ARG`/`CA_ERR_NOMEM` mappings are tested synthetically only.
+      They cannot be triggered from Python without fault injection.
+    - `CallRecord` fields are never read or written by Python (the pointer is
+      only passed back to C).
+    - Results do not indicate whether `max_anomalies` (default 1000)
+      truncated the anomaly list.
+    - An empty or whitespace `CALL_ANALYZER_LIB` is treated as unset.
+    - Non-glibc platforms, concurrent first load from several threads and
+      multi-million-row inputs are untested.
 - M1 not yet verified: behaviour under clang / other compilers (not installed);
   static analysis (cppcheck/clang-tidy not installed); very large inputs
   (> 1M rows) for performance.

@@ -32,3 +32,6 @@ cmake-build-*/
 .vscode/
 .DS_Store
 Thumbs.db
+# Generated synthetic data (reproduce with `make call-logs`)
+data/call_logs/*.csv
+data/call_logs/*.json

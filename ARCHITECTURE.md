@@ -173,20 +173,84 @@ across cells, time windows, callers and individual durations, with minimum
 sample sizes and absolute-difference floors to suppress noise. Score is
 `1 − 2^(−z/threshold)` (0.5 at the threshold), mapped to severity bands.
 
-### 3.2 Python binding — *(planned M2)*
+### 3.2 Python binding (`backend/call_analyzer/`) — implemented (M2)
 
 ```python
 from call_analyzer import analyze_call_log
-result: dict = analyze_call_log("data/call_logs/call_logs.csv", window_seconds=300)
+result = analyze_call_log("data/call_logs/call_logs.csv", window_seconds=300,
+                          strict=False, max_records=None, anomaly_config=None)
 ```
 
-Returned dict keys: `total_calls, successful_calls, failed_setup_calls,
-dropped_calls, success_rate, drop_rate, average_duration, average_signal,
-average_packet_loss, cells[], failure_codes[], time_windows[], callers[],
-anomalies[], suspicious_time_windows[], parse_report{}`. Errors raise
-`CallAnalyzerError` subclasses carrying the C status code. Library path:
-`CALL_ANALYZER_LIB` env var, else `c-library/build/libcallanalyzer.so`, else
-`/usr/local/lib/libcallanalyzer.so` (Docker).
+Modules: `_native.py` (ctypes struct mirrors, `argtypes`/`restype` for every
+function used, library discovery, ABI check), `analysis.py` (marshalling and
+memory ownership), `errors.py` (exceptions), `types.py` (TypedDicts).
+
+**All computation is in C.** The binding calls `parse_call_log_ex`,
+`calculate_statistics`, `calculate_cell_statistics`,
+`calculate_failure_code_statistics`, `calculate_time_window_statistics`,
+`calculate_caller_statistics` and `detect_call_anomalies`. Names for outcomes,
+anomaly types and severities come from the C `*_name` functions, and anomaly
+defaults come from `anomaly_config_default`. The only Python-side derivation is
+`suspicious_time_windows`, which groups the window-category anomalies returned
+by C and joins them to that window's C statistics.
+
+Result (`CallAnalysisResult`, JSON-serialisable): `source, library_version,
+window_seconds`, overall `total_calls, successful_calls, failed_setup_calls,
+dropped_calls, unknown_calls, success_rate, drop_rate, setup_failure_rate,
+average_duration, duration_stddev, min_duration, max_duration, average_signal,
+average_packet_loss, weak_signal_calls, unique_cells, unique_callers,
+first_epoch/last_epoch, first_timestamp/last_timestamp` (None when empty), and
+lists `cells[], failure_codes[], time_windows[], callers[], anomalies[],
+suspicious_time_windows[]`, plus `parse_report{}`. Each anomaly follows the
+spec §6 vocabulary: `type, category (cell|window|caller|call), severity,
+subject, window_start/window_end (ISO + epoch), value, baseline, z_score,
+anomaly_score, sample_size, record_index, description`.
+
+Memory ownership: every native array is converted to Python values and then
+released with its matching `free_*` in a `finally` block. `free_call_records`
+runs after all analyses (also on error paths). No native pointer escapes the
+call.
+
+Library discovery (`resolve_library_path`), always loading by absolute path,
+never via the dynamic linker search path:
+1. `CALL_ANALYZER_LIB` if set to a non-blank value. A missing or unloadable file is an error; the binding never falls back silently. An empty or whitespace-only value counts as unset.
+2. `<repo>/c-library/build/libcallanalyzer.so` (local `make c-build`).
+3. `/usr/local/lib/libcallanalyzer.so` (Docker / `cmake --install`).
+
+Tests additionally compile an `offsetof`/`sizeof`/`_Generic` probe against the
+header and compare every field's name, order, offset, size and type class with
+the mirrors (`test_binding_abi_and_ownership.py`).
+
+On load, the binding checks that the major version is 1 and that every
+`CaStructSizes` entry equals `ctypes.sizeof` of the Python mirror. If either
+check fails, it raises `LibraryLoadError`.
+
+Errors: `CallAnalyzerError` carries `code` (original `CaStatus`), `code_name`,
+`c_message` (from `call_analyzer_strerror`) and, for parse failures,
+`parse_report`. Subclasses: `NullArgumentError` (-1), `InvalidArgumentError`
+(-2), `CallLogIOError` (-3), `OutOfMemoryError` (-4), `CallLogParseError` (-5),
+`CallAnalyzerOverflowError` (-6), `LimitExceededError` (-7), and
+`LibraryLoadError` (no code). Suspicious-window grouping raises
+`CallAnalyzerError` if C returns a window anomaly with no matching window
+statistics, rather than inventing values. Arguments that cannot be passed to C at all
+(non-int window, `window_seconds` outside int64 which ctypes would silently
+wrap, NUL in the path, negative `max_records`, numeric overrides that overflow
+a C double or size_t, unknown `anomaly_config` keys) raise `TypeError`/`ValueError`. Range checks such as
+`window_seconds` are left to C.
+
+### 3.2a Call-log generator (`scripts/generate_call_logs.py`) — implemented (M2)
+
+Standalone script with no dependency on the backend. `--seed` plus arguments
+produce byte-identical CSV, verified identical on Python 3.12 and 3.14. Healthy
+baseline: 12 cells (`CELL-101…112`), Poisson arrivals (~40/min with a ±15 %
+load cycle), gamma durations (mean 125 s), 2.5 % setup failures and 1.2 % drops.
+Optional fault (`--faulty-cell`, default `CELL-107`, `none` disables it): a
+progressive radio degradation in which severity ramps 0.3→1.0 over the first
+half of the window. Signal falls by up to 22 dB, packet loss rises by up to
+14 pp, drops rise by up to 35 pp (mostly 901/903), and setup failures rise
+(408/503). `--manifest` writes the injected ground truth plus the CSV's SHA-256.
+The default fault is cell-local, so the C library reports it as cell anomalies.
+It is usually too diluted across all cells to trigger window anomalies.
 
 ### 3.3 Analytics and correlation — *(planned M4–M5)*
 
@@ -264,7 +328,8 @@ client in `frontend/src/services/api.ts` whose types mirror the Pydantic schemas
 Local development (WSL2):
 
 - C: `make c-build`, `make c-test`, `make c-test-asan` (CMake out-of-tree builds under `c-library/build*`).
-- Python: `backend/.venv`, `pytest`; the binding finds the locally built `.so`.
+- Python: `make py-venv` (pinned dev tools in `backend/requirements-dev.txt`), `make py-test`, `make py-typecheck`; the binding finds the locally built `.so`.
+- Data: `make call-logs SEED=42` writes `data/call_logs/call_logs.csv` + manifest (git-ignored, reproducible).
 - Frontend: Node is not installed in WSL; use the `node` container (`make frontend-test`) *(planned)*.
 
 Docker (`docker compose up --build`) *(planned M11–M12)*:

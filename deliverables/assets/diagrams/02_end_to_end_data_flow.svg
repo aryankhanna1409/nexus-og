@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="518.4pt" height="331.2pt" viewBox="0 0 518.4 331.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T02:29:18.691094</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 331.2 
+L 518.4 331.2 
+L 518.4 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 99.36 70.2 
+Q 104.76 70.2 108.706556 70.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 105.906556 68.8 
+L 108.706556 70.2 
+L 105.906556 71.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 202.32 70.2 
+Q 207.72 70.2 211.666556 70.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 208.866556 68.8 
+L 211.666556 70.2 
+L 208.866556 71.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 305.28 70.2 
+Q 310.68 70.2 314.626556 70.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 311.826556 68.8 
+L 314.626556 70.2 
+L 311.826556 71.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 408.24 70.2 
+Q 413.64 70.2 417.586556 70.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 414.786556 68.8 
+L 417.586556 70.2 
+L 414.786556 71.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 99.36 196.2 
+Q 104.76 196.2 108.706556 196.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 105.906556 194.8 
+L 108.706556 196.2 
+L 105.906556 197.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 202.32 196.2 
+Q 207.72 196.2 211.666556 196.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 208.866556 194.8 
+L 211.666556 196.2 
+L 208.866556 197.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 305.28 196.2 
+Q 310.68 196.2 314.626556 196.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 311.826556 194.8 
+L 314.626556 196.2 
+L 311.826556 197.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 408.24 196.2 
+Q 413.64 196.2 417.586556 196.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 414.786556 194.8 
+L 417.586556 196.2 
+L 414.786556 197.6 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 465.12 108 
+L 465.12 133.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 465.12 133.2 
+L 53.28 133.2 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 53.28 133.2 
+Q 53.28 145.8 53.28 156.946556 
+" clip-path="url(#p99f177048f)" style="fill: none; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 54.68 154.146556 
+L 53.28 156.946556 
+L 51.88 154.146556 
+z
+" clip-path="url(#p99f177048f)" style="fill: #8a99ad; stroke: #8a99ad; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 12.24 32.4 
+L 94.32 32.4 
+Q 99.36 32.4 99.36 37.44 
+L 99.36 102.96 
+Q 99.36 108 94.32 108 
+L 12.24 108 
+Q 7.2 108 7.2 102.96 
+L 7.2 37.44 
+Q 7.2 32.4 12.24 32.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #f1f5f9; stroke: #64748b; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 115.2 32.4 
+L 197.28 32.4 
+Q 202.32 32.4 202.32 37.44 
+L 202.32 102.96 
+Q 202.32 108 197.28 108 
+L 115.2 108 
+Q 110.16 108 110.16 102.96 
+L 110.16 37.44 
+Q 110.16 32.4 115.2 32.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #fef3c7; stroke: #b45309; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 218.16 32.4 
+L 300.24 32.4 
+Q 305.28 32.4 305.28 37.44 
+L 305.28 102.96 
+Q 305.28 108 300.24 108 
+L 218.16 108 
+Q 213.12 108 213.12 102.96 
+L 213.12 37.44 
+Q 213.12 32.4 218.16 32.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 321.12 32.4 
+L 403.2 32.4 
+Q 408.24 32.4 408.24 37.44 
+L 408.24 102.96 
+Q 408.24 108 403.2 108 
+L 321.12 108 
+Q 316.08 108 316.08 102.96 
+L 316.08 37.44 
+Q 316.08 32.4 321.12 32.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 424.08 32.4 
+L 506.16 32.4 
+Q 511.2 32.4 511.2 37.44 
+L 511.2 102.96 
+Q 511.2 108 506.16 108 
+L 424.08 108 
+Q 419.04 108 419.04 102.96 
+L 419.04 37.44 
+Q 419.04 32.4 424.08 32.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #ccfbf1; stroke: #0f766e; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 12.24 158.4 
+L 94.32 158.4 
+Q 99.36 158.4 99.36 163.44 
+L 99.36 228.96 
+Q 99.36 234 94.32 234 
+L 12.24 234 
+Q 7.2 234 7.2 228.96 
+L 7.2 163.44 
+Q 7.2 158.4 12.24 158.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #ede9fe; stroke: #6d28d9; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 115.2 158.4 
+L 197.28 158.4 
+Q 202.32 158.4 202.32 163.44 
+L 202.32 228.96 
+Q 202.32 234 197.28 234 
+L 115.2 234 
+Q 110.16 234 110.16 228.96 
+L 110.16 163.44 
+Q 110.16 158.4 115.2 158.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 218.16 158.4 
+L 300.24 158.4 
+Q 305.28 158.4 305.28 163.44 
+L 305.28 228.96 
+Q 305.28 234 300.24 234 
+L 218.16 234 
+Q 213.12 234 213.12 228.96 
+L 213.12 163.44 
+Q 213.12 158.4 218.16 158.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #fee2e2; stroke: #b91c1c; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 321.12 158.4 
+L 403.2 158.4 
+Q 408.24 158.4 408.24 163.44 
+L 408.24 228.96 
+Q 408.24 234 403.2 234 
+L 321.12 234 
+Q 316.08 234 316.08 228.96 
+L 316.08 163.44 
+Q 316.08 158.4 321.12 158.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 424.08 158.4 
+L 506.16 158.4 
+Q 511.2 158.4 511.2 163.44 
+L 511.2 228.96 
+Q 511.2 234 506.16 234 
+L 424.08 234 
+Q 419.04 234 419.04 228.96 
+L 419.04 163.44 
+Q 419.04 158.4 424.08 158.4 
+z
+" clip-path="url(#p99f177048f)" style="fill: #dcfce7; stroke: #15803d; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="53.28" y="60.063047" transform="rotate(-0 53.28 60.063047)">1. Generate</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(13.367422 83.355078)">simulator: 17 KPIs x 12 cells,</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(30.106172 90.918359)">events, CDR CSV</text>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="156.24" y="59.50875" transform="rotate(-0 156.24 59.50875)">2. Call analysis</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(127.725938 83.228203)">C library parses CSV,</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(125.553203 91.518281)">stats + robust outliers</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="259.2" y="60.065063" transform="rotate(-0 259.2 60.065063)">3. Detect</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(223.276875 83.221641)">4 detectors per KPI series</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(230.032969 90.928203)">-&gt; anomaly episodes</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="362.16" y="60.222281" transform="rotate(-0 362.16 60.222281)">4. Correlate</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(332.557109 83.355078)">cluster, score causes,</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(342.569844 91.518281)">build timeline</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="465.12" y="60.065063" transform="rotate(-0 465.12 60.065063)">5. Store</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(428.610078 83.226562)">pipeline_runs, anomalies,</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(434.268594 91.005313)">incidents, events (DB)</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="53.28" y="185.432828" transform="rotate(-0 53.28 185.432828)">6. Investigate</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(20.214297 209.226562)">RCA engine + read-only</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(30.933594 216.928203)">tools + provider</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="156.24" y="185.303156" transform="rotate(-0 156.24 185.303156)">7. Report</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(119.322109 209.502187)">JSON / Markdown / HTML</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(129.091484 216.940234)">from stored figures</text>
+   </g>
+   <g id="text_15">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="259.2" y="186.065063" transform="rotate(-0 259.2 186.065063)">8. Act</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(227.296406 209.226562)">agent proposes; policy</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(224.865 216.926562)">gates; approval; execute</text>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="362.16" y="185.525547" transform="rotate(-0 362.16 185.525547)">9. Verify</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(337.205547 209.228203)">recovery check vs</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(332.244297 216.928203)">pre-incident baseline</text>
+   </g>
+   <g id="text_19">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="465.12" y="186.222281" transform="rotate(-0 465.12 186.222281)">10. Audit + show</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(440.081328 209.226562)">hash-chained log;</text>
+    <text style="font-size: 7px; font-family: 'Calibri'; fill: #5b6b7f" transform="translate(435.925078 217.518281)">dashboard reads API</text>
+   </g>
+   <g id="text_21">
+    <g id="patch_21">
+     <path d="M 192.92625 128.952 
+L 325.47375 128.952 
+L 325.47375 120.168 
+L 192.92625 120.168 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 7.2px; font-family: 'Calibri'; text-anchor: middle; fill: #5b6b7f" x="259.2" y="126.36" transform="rotate(-0 259.2 126.36)">state persisted: later steps read the database</text>
+   </g>
+   <g id="text_22">
+    <text style="font-style: italic; font-size: 8.2px; font-family: 'Calibri'; text-anchor: start; fill: #5b6b7f" x="7.2" y="16.459609" transform="rotate(-0 7.2 16.459609)">Synthetic data in, audited evidence out. Dashed line = persisted state boundary.</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 8.2px; font-family: 'Calibri'; text-anchor: start; fill: #1b2a41" x="7.2" y="290.760453" transform="rotate(-0 7.2 290.760453)">Artefacts at each hand-off:</text>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 7.5px; font-family: 'Calibri'; text-anchor: start; fill: #5b6b7f" x="7.2" y="307.894922" transform="rotate(-0 7.2 307.894922)">CSV + metric arrays  -  CallAnalysisResult  -  MetricAnomaly  -  Incident  -  DB rows  -  RCAAnswer  -  ReportDocument  -  AgentAction  -  recovered flag  -  AuditLogRecord</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p99f177048f">
+   <rect x="0" y="0" width="518.4" height="331.2"/>
+  </clipPath>
+ </defs>
+</svg>

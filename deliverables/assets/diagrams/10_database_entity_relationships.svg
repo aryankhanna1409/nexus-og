@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="518.4pt" height="619.2pt" viewBox="0 0 518.4 619.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-20T02:31:15.626511</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 619.2 
+L 518.4 619.2 
+L 518.4 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="line2d_1">
+    <path d="M 183.6 36 
+L 174.24 36 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 174.24 36 
+L 174.24 36 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_2">
+    <path d="M 174.24 36 
+Q 169.92 36 166.606231 36 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 168.606231 37 
+L 166.606231 36 
+L 168.606231 35 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 174.24 36 
+L 174.24 241.2 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 174.24 136.8 
+Q 169.92 136.8 166.606231 136.8 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 168.606231 137.8 
+L 166.606231 136.8 
+L 168.606231 135.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 174.24 241.2 
+Q 169.92 241.2 166.606231 241.2 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 168.606231 242.2 
+L 166.606231 241.2 
+L 168.606231 240.2 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 342 36 
+Q 351 36 358.993769 36 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 356.993769 35 
+L 358.993769 36 
+L 356.993769 37 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 262.8 85.68 
+Q 262.8 98.64 262.8 110.593769 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 263.8 108.593769 
+L 262.8 110.593769 
+L 261.8 108.593769 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 342 140.4 
+Q 351 140.4 358.993769 140.4 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 356.993769 139.4 
+L 358.993769 140.4 
+L 356.993769 141.4 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 262.8 186.48 
+Q 262.8 201.24 262.8 214.993769 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 263.8 212.993769 
+L 262.8 214.993769 
+L 261.8 212.993769 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 174.24 356.4 
+L 174.24 471.6 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: square"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 183.6 356.4 
+Q 178.92 356.4 175.246231 356.4 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 177.246231 357.4 
+L 175.246231 356.4 
+L 177.246231 355.4 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 174.24 356.4 
+Q 169.92 356.4 166.606231 356.4 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 168.606231 357.4 
+L 166.606231 356.4 
+L 168.606231 355.4 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 174.24 410.4 
+Q 169.92 410.4 166.606231 410.4 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 168.606231 411.4 
+L 166.606231 410.4 
+L 168.606231 409.4 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 174.24 468 
+Q 169.92 468 166.606231 468 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 168.606231 469 
+L 166.606231 468 
+L 168.606231 467 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 342 374.4 
+Q 351 374.4 358.993769 374.4 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 356.993769 373.4 
+L 358.993769 374.4 
+L 356.993769 375.4 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 262.8 419.4 
+Q 262.8 432.9 262.8 445.393769 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 263.8 443.393769 
+L 262.8 445.393769 
+L 261.8 443.393769 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 435.6 419.4 
+Q 435.6 431.1 435.6 441.793769 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 436.6 439.793769 
+L 435.6 441.793769 
+L 434.6 439.793769 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 342 568.8 
+Q 351 568.8 358.993769 568.8 
+" clip-path="url(#p0f1d3a75e8)" style="fill: none; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+    <path d="M 356.993769 567.8 
+L 358.993769 568.8 
+L 356.993769 569.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #475569; stroke: #475569; stroke-width: 0.9; stroke-linecap: round"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 10.8 10.8 
+L 162 10.8 
+Q 165.6 10.8 165.6 14.4 
+L 165.6 82.08 
+Q 165.6 85.68 162 85.68 
+L 10.8 85.68 
+Q 7.2 85.68 7.2 82.08 
+L 7.2 14.4 
+Q 7.2 10.8 10.8 10.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 7.2 10.8 
+L 165.6 10.8 
+L 165.6 30.24 
+L 7.2 30.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 187.2 10.8 
+L 338.4 10.8 
+Q 342 10.8 342 14.4 
+L 342 82.08 
+Q 342 85.68 338.4 85.68 
+L 187.2 85.68 
+Q 183.6 85.68 183.6 82.08 
+L 183.6 14.4 
+Q 183.6 10.8 187.2 10.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #ccfbf1; stroke: #0f766e; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 183.6 10.8 
+L 342 10.8 
+L 342 30.24 
+L 183.6 30.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #0f766e; opacity: 0.22; stroke: #0f766e; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_21">
+    <path d="M 363.6 10.8 
+L 507.6 10.8 
+Q 511.2 10.8 511.2 14.4 
+L 511.2 95.4 
+Q 511.2 99 507.6 99 
+L 363.6 99 
+Q 360 99 360 95.4 
+L 360 14.4 
+Q 360 10.8 363.6 10.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 360 10.8 
+L 511.2 10.8 
+L 511.2 30.24 
+L 360 30.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_23">
+    <path d="M 10.8 111.6 
+L 162 111.6 
+Q 165.6 111.6 165.6 115.2 
+L 165.6 196.2 
+Q 165.6 199.8 162 199.8 
+L 10.8 199.8 
+Q 7.2 199.8 7.2 196.2 
+L 7.2 115.2 
+Q 7.2 111.6 10.8 111.6 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_24">
+    <path d="M 7.2 111.6 
+L 165.6 111.6 
+L 165.6 131.04 
+L 7.2 131.04 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 187.2 111.6 
+L 338.4 111.6 
+Q 342 111.6 342 115.2 
+L 342 182.88 
+Q 342 186.48 338.4 186.48 
+L 187.2 186.48 
+Q 183.6 186.48 183.6 182.88 
+L 183.6 115.2 
+Q 183.6 111.6 187.2 111.6 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_26">
+    <path d="M 183.6 111.6 
+L 342 111.6 
+L 342 131.04 
+L 183.6 131.04 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_27">
+    <path d="M 363.6 111.6 
+L 507.6 111.6 
+Q 511.2 111.6 511.2 115.2 
+L 511.2 169.56 
+Q 511.2 173.16 507.6 173.16 
+L 363.6 173.16 
+Q 360 173.16 360 169.56 
+L 360 115.2 
+Q 360 111.6 363.6 111.6 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 360 111.6 
+L 511.2 111.6 
+L 511.2 131.04 
+L 360 131.04 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_29">
+    <path d="M 10.8 216 
+L 162 216 
+Q 165.6 216 165.6 219.6 
+L 165.6 300.6 
+Q 165.6 304.2 162 304.2 
+L 10.8 304.2 
+Q 7.2 304.2 7.2 300.6 
+L 7.2 219.6 
+Q 7.2 216 10.8 216 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_30">
+    <path d="M 7.2 216 
+L 165.6 216 
+L 165.6 235.44 
+L 7.2 235.44 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_31">
+    <path d="M 187.2 216 
+L 338.4 216 
+Q 342 216 342 219.6 
+L 342 273.96 
+Q 342 277.56 338.4 277.56 
+L 187.2 277.56 
+Q 183.6 277.56 183.6 273.96 
+L 183.6 219.6 
+Q 183.6 216 187.2 216 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_32">
+    <path d="M 183.6 216 
+L 342 216 
+L 342 235.44 
+L 183.6 235.44 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_33">
+    <path d="M 363.6 216 
+L 507.6 216 
+Q 511.2 216 511.2 219.6 
+L 511.2 300.6 
+Q 511.2 304.2 507.6 304.2 
+L 363.6 304.2 
+Q 360 304.2 360 300.6 
+L 360 219.6 
+Q 360 216 363.6 216 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #ccfbf1; stroke: #0f766e; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_34">
+    <path d="M 360 216 
+L 511.2 216 
+L 511.2 235.44 
+L 360 235.44 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #0f766e; opacity: 0.22; stroke: #0f766e; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_35">
+    <path d="M 10.8 331.2 
+L 162 331.2 
+Q 165.6 331.2 165.6 334.8 
+L 165.6 375.84 
+Q 165.6 379.44 162 379.44 
+L 10.8 379.44 
+Q 7.2 379.44 7.2 375.84 
+L 7.2 334.8 
+Q 7.2 331.2 10.8 331.2 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_36">
+    <path d="M 7.2 331.2 
+L 165.6 331.2 
+L 165.6 350.64 
+L 7.2 350.64 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_37">
+    <path d="M 187.2 331.2 
+L 338.4 331.2 
+Q 342 331.2 342 334.8 
+L 342 415.8 
+Q 342 419.4 338.4 419.4 
+L 187.2 419.4 
+Q 183.6 419.4 183.6 415.8 
+L 183.6 334.8 
+Q 183.6 331.2 187.2 331.2 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_38">
+    <path d="M 183.6 331.2 
+L 342 331.2 
+L 342 350.64 
+L 183.6 350.64 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_39">
+    <path d="M 363.6 331.2 
+L 507.6 331.2 
+Q 511.2 331.2 511.2 334.8 
+L 511.2 415.8 
+Q 511.2 419.4 507.6 419.4 
+L 363.6 419.4 
+Q 360 419.4 360 415.8 
+L 360 334.8 
+Q 360 331.2 363.6 331.2 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #ede9fe; stroke: #6d28d9; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_40">
+    <path d="M 360 331.2 
+L 511.2 331.2 
+L 511.2 350.64 
+L 360 350.64 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #6d28d9; opacity: 0.22; stroke: #6d28d9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_41">
+    <path d="M 10.8 388.8 
+L 162 388.8 
+Q 165.6 388.8 165.6 392.4 
+L 165.6 433.44 
+Q 165.6 437.04 162 437.04 
+L 10.8 437.04 
+Q 7.2 437.04 7.2 433.44 
+L 7.2 392.4 
+Q 7.2 388.8 10.8 388.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_42">
+    <path d="M 7.2 388.8 
+L 165.6 388.8 
+L 165.6 408.24 
+L 7.2 408.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_43">
+    <path d="M 10.8 446.4 
+L 162 446.4 
+Q 165.6 446.4 165.6 450 
+L 165.6 491.04 
+Q 165.6 494.64 162 494.64 
+L 10.8 494.64 
+Q 7.2 494.64 7.2 491.04 
+L 7.2 450 
+Q 7.2 446.4 10.8 446.4 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #dbeafe; stroke: #1d4ed8; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_44">
+    <path d="M 7.2 446.4 
+L 165.6 446.4 
+L 165.6 465.84 
+L 7.2 465.84 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #1d4ed8; opacity: 0.22; stroke: #1d4ed8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_45">
+    <path d="M 187.2 446.4 
+L 338.4 446.4 
+Q 342 446.4 342 450 
+L 342 517.68 
+Q 342 521.28 338.4 521.28 
+L 187.2 521.28 
+Q 183.6 521.28 183.6 517.68 
+L 183.6 450 
+Q 183.6 446.4 187.2 446.4 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #ede9fe; stroke: #6d28d9; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_46">
+    <path d="M 183.6 446.4 
+L 342 446.4 
+L 342 465.84 
+L 183.6 465.84 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #6d28d9; opacity: 0.22; stroke: #6d28d9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_47">
+    <path d="M 363.6 442.8 
+L 507.6 442.8 
+Q 511.2 442.8 511.2 446.4 
+L 511.2 500.76 
+Q 511.2 504.36 507.6 504.36 
+L 363.6 504.36 
+Q 360 504.36 360 500.76 
+L 360 446.4 
+Q 360 442.8 363.6 442.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #ede9fe; stroke: #6d28d9; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_48">
+    <path d="M 360 442.8 
+L 511.2 442.8 
+L 511.2 462.24 
+L 360 462.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #6d28d9; opacity: 0.22; stroke: #6d28d9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_49">
+    <path d="M 10.8 532.8 
+L 162 532.8 
+Q 165.6 532.8 165.6 536.4 
+L 165.6 590.76 
+Q 165.6 594.36 162 594.36 
+L 10.8 594.36 
+Q 7.2 594.36 7.2 590.76 
+L 7.2 536.4 
+Q 7.2 532.8 10.8 532.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #fee2e2; stroke: #b91c1c; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_50">
+    <path d="M 7.2 532.8 
+L 165.6 532.8 
+L 165.6 552.24 
+L 7.2 552.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #b91c1c; opacity: 0.22; stroke: #b91c1c; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_51">
+    <path d="M 187.2 532.8 
+L 338.4 532.8 
+Q 342 532.8 342 536.4 
+L 342 590.76 
+Q 342 594.36 338.4 594.36 
+L 187.2 594.36 
+Q 183.6 594.36 183.6 590.76 
+L 183.6 536.4 
+Q 183.6 532.8 187.2 532.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #fee2e2; stroke: #b91c1c; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_52">
+    <path d="M 183.6 532.8 
+L 342 532.8 
+L 342 552.24 
+L 183.6 552.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #b91c1c; opacity: 0.22; stroke: #b91c1c; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_53">
+    <path d="M 363.6 532.8 
+L 507.6 532.8 
+Q 511.2 532.8 511.2 536.4 
+L 511.2 590.76 
+Q 511.2 594.36 507.6 594.36 
+L 363.6 594.36 
+Q 360 594.36 360 590.76 
+L 360 536.4 
+Q 360 532.8 363.6 532.8 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #fee2e2; stroke: #b91c1c; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_54">
+    <path d="M 360 532.8 
+L 511.2 532.8 
+L 511.2 552.24 
+L 360 552.24 
+z
+" clip-path="url(#p0f1d3a75e8)" style="fill: #b91c1c; opacity: 0.22; stroke: #b91c1c; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="86.4" y="22.525625" transform="rotate(-0 86.4 22.525625)">network_metrics</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="41.935906" transform="rotate(-0 12.24 41.935906)">PK id</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="54.605125" transform="rotate(-0 12.24 54.605125)">FK run_id</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="67.925125" transform="rotate(-0 12.24 67.925125)">epoch, cell_id, node_id</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="81.35775" transform="rotate(-0 12.24 81.35775)">metric, value</text>
+   </g>
+   <g id="text_6">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="262.8" y="22.525625" transform="rotate(-0 262.8 22.525625)">pipeline_runs</text>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="41.935906" transform="rotate(-0 188.64 41.935906)">PK id</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="54.71775" transform="rotate(-0 188.64 54.71775)">scenario, seed, status</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="67.905469" transform="rotate(-0 188.64 67.905469)">data_start/end_epoch</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="81.228125" transform="rotate(-0 188.64 81.228125)">fingerprint, params</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="435.6" y="23.19375" transform="rotate(-0 435.6 23.19375)">anomalies</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="41.275031" transform="rotate(-0 365.04 41.275031)">PK anomaly_id</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="54.605125" transform="rotate(-0 365.04 54.605125)">FK run_id</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="67.925125" transform="rotate(-0 365.04 67.925125)">metric, cell_id, node_id</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="81.225469" transform="rotate(-0 365.04 81.225469)">start/end_epoch, value</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="94.555031" transform="rotate(-0 365.04 94.555031)">severity, anomaly_score</text>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="86.4" y="123.325625" transform="rotate(-0 86.4 123.325625)">operational_events</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="142.085125" transform="rotate(-0 12.24 142.085125)">PK event_id</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="155.405125" transform="rotate(-0 12.24 155.405125)">FK run_id</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="168.715031" transform="rotate(-0 12.24 168.715031)">type, source, severity</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="182.045125" transform="rotate(-0 12.24 182.045125)">node_id, cell_id</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="195.348125" transform="rotate(-0 12.24 195.348125)">message, attributes</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="262.8" y="123.325625" transform="rotate(-0 262.8 123.325625)">call_analysis_runs</text>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="142.735906" transform="rotate(-0 188.64 142.735906)">PK id</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="155.405125" transform="rotate(-0 188.64 155.405125)">FK run_id</text>
+   </g>
+   <g id="text_26">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="168.818094" transform="rotate(-0 188.64 168.818094)">totals, rates</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="182.134375" transform="rotate(-0 188.64 182.134375)">failure_codes (JSON)</text>
+   </g>
+   <g id="text_28">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="435.6" y="123.325625" transform="rotate(-0 435.6 123.325625)">call_anomalies</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="142.075031" transform="rotate(-0 365.04 142.075031)">FK analysis_id</text>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="155.388125" transform="rotate(-0 365.04 155.388125)">type, severity, subject</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="168.725125" transform="rotate(-0 365.04 168.725125)">value, baseline, z_score</text>
+   </g>
+   <g id="text_32">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="86.4" y="227.73" transform="rotate(-0 86.4 227.73)">deployments</text>
+   </g>
+   <g id="text_33">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="246.475031" transform="rotate(-0 12.24 246.475031)">PK deployment_id</text>
+   </g>
+   <g id="text_34">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="259.805125" transform="rotate(-0 12.24 259.805125)">FK run_id</text>
+   </g>
+   <g id="text_35">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="273.125125" transform="rotate(-0 12.24 273.125125)">service, node_id</text>
+   </g>
+   <g id="text_36">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="286.445125" transform="rotate(-0 12.24 286.445125)">from/to_version</text>
+   </g>
+   <g id="text_37">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="299.745469" transform="rotate(-0 12.24 299.745469)">status, rolled_back_epoch</text>
+   </g>
+   <g id="text_38">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="262.8" y="227.725625" transform="rotate(-0 262.8 227.725625)">call_cell_statistics</text>
+   </g>
+   <g id="text_39">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="246.475031" transform="rotate(-0 188.64 246.475031)">FK analysis_id</text>
+   </g>
+   <g id="text_40">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="259.805125" transform="rotate(-0 188.64 259.805125)">cell_id, rates</text>
+   </g>
+   <g id="text_41">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="273.108125" transform="rotate(-0 188.64 273.108125)">signal, packet loss</text>
+   </g>
+   <g id="text_42">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="435.6" y="227.725625" transform="rotate(-0 435.6 227.725625)">audit_logs</text>
+   </g>
+   <g id="text_43">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="247.135906" transform="rotate(-0 365.04 247.135906)">PK id</text>
+   </g>
+   <g id="text_44">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="259.805125" transform="rotate(-0 365.04 259.805125)">epoch, actor, role, action</text>
+   </g>
+   <g id="text_45">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="273.072" transform="rotate(-0 365.04 273.072)">resource, outcome</text>
+   </g>
+   <g id="text_46">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="286.445125" transform="rotate(-0 365.04 286.445125)">request_id, details</text>
+   </g>
+   <g id="text_47">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="299.854375" transform="rotate(-0 365.04 299.854375)">prev_hash, hash (unique)</text>
+   </g>
+   <g id="text_48">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="86.4" y="342.925625" transform="rotate(-0 86.4 342.925625)">incident_cells</text>
+   </g>
+   <g id="text_49">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="361.685125" transform="rotate(-0 12.24 361.685125)">FK incident_id</text>
+   </g>
+   <g id="text_50">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="375.005125" transform="rotate(-0 12.24 375.005125)">cell_id, node_id</text>
+   </g>
+   <g id="text_51">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="262.8" y="343.588125" transform="rotate(-0 262.8 343.588125)">incidents</text>
+   </g>
+   <g id="text_52">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="361.685125" transform="rotate(-0 188.64 361.685125)">PK incident_id</text>
+   </g>
+   <g id="text_53">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="375.005125" transform="rotate(-0 188.64 375.005125)">FK run_id</text>
+   </g>
+   <g id="text_54">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="388.315031" transform="rotate(-0 188.64 388.315031)">severity, status</text>
+   </g>
+   <g id="text_55">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="401.635031" transform="rotate(-0 188.64 401.635031)">confidence, top_cause_type</text>
+   </g>
+   <g id="text_56">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="415.054375" transform="rotate(-0 188.64 415.054375)">symptoms, causes (JSON)</text>
+   </g>
+   <g id="text_57">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="435.6" y="342.925625" transform="rotate(-0 435.6 342.925625)">root_cause_analyses</text>
+   </g>
+   <g id="text_58">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="362.335906" transform="rotate(-0 365.04 362.335906)">PK id</text>
+   </g>
+   <g id="text_59">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="375.005125" transform="rotate(-0 365.04 375.005125)">FK incident_id</text>
+   </g>
+   <g id="text_60">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="388.325125" transform="rotate(-0 365.04 388.325125)">provider, model, status</text>
+   </g>
+   <g id="text_61">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="402.295906" transform="rotate(-0 365.04 402.295906)">confidence</text>
+   </g>
+   <g id="text_62">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="415.054375" transform="rotate(-0 365.04 415.054375)">facts, hypotheses (JSON)</text>
+   </g>
+   <g id="text_63">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="86.4" y="400.525625" transform="rotate(-0 86.4 400.525625)">incident_anomalies</text>
+   </g>
+   <g id="text_64">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="419.285125" transform="rotate(-0 12.24 419.285125)">FK incident_id</text>
+   </g>
+   <g id="text_65">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="432.595031" transform="rotate(-0 12.24 432.595031)">FK anomaly_id</text>
+   </g>
+   <g id="text_66">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="86.4" y="458.12" transform="rotate(-0 86.4 458.12)">incident_events</text>
+   </g>
+   <g id="text_67">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="476.885125" transform="rotate(-0 12.24 476.885125)">FK incident_id</text>
+   </g>
+   <g id="text_68">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="490.175375" transform="rotate(-0 12.24 490.175375)">epoch, type, actor</text>
+   </g>
+   <g id="text_69">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="262.8" y="457.756875" transform="rotate(-0 262.8 457.756875)">reports</text>
+   </g>
+   <g id="text_70">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="476.885125" transform="rotate(-0 188.64 476.885125)">PK report_id</text>
+   </g>
+   <g id="text_71">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="490.205125" transform="rotate(-0 188.64 490.205125)">FK incident_id</text>
+   </g>
+   <g id="text_72">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="503.614375" transform="rotate(-0 188.64 503.614375)">FK rca_id (SET NULL)</text>
+   </g>
+   <g id="text_73">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="516.815375" transform="rotate(-0 188.64 516.815375)">payload, markdown, html</text>
+   </g>
+   <g id="text_74">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="435.6" y="455.188125" transform="rotate(-0 435.6 455.188125)">recommendations</text>
+   </g>
+   <g id="text_75">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="473.935906" transform="rotate(-0 365.04 473.935906)">PK id</text>
+   </g>
+   <g id="text_76">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="486.605125" transform="rotate(-0 365.04 486.605125)">FK rca_id</text>
+   </g>
+   <g id="text_77">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="499.908125" transform="rotate(-0 365.04 499.908125)">action, risk_class, agent_tool</text>
+   </g>
+   <g id="text_78">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="86.4" y="544.545" transform="rotate(-0 86.4 544.545)">security_findings</text>
+   </g>
+   <g id="text_79">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="563.268125" transform="rotate(-0 12.24 563.268125)">PK finding_id</text>
+   </g>
+   <g id="text_80">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="576.588125" transform="rotate(-0 12.24 576.588125)">source, category, severity</text>
+   </g>
+   <g id="text_81">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="12.24" y="590.03775" transform="rotate(-0 12.24 590.03775)">status, details</text>
+   </g>
+   <g id="text_82">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="262.8" y="544.1525" transform="rotate(-0 262.8 544.1525)">agent_runs</text>
+   </g>
+   <g id="text_83">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="563.285125" transform="rotate(-0 188.64 563.285125)">PK run_id</text>
+   </g>
+   <g id="text_84">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="576.71775" transform="rotate(-0 188.64 576.71775)">scenario, state, status</text>
+   </g>
+   <g id="text_85">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="188.64" y="590.014375" transform="rotate(-0 188.64 590.014375)">incident_id (no FK)</text>
+   </g>
+   <g id="text_86">
+    <text style="font-weight: 700; font-size: 8px; font-family: 'Calibri'; text-anchor: middle; fill: #1b2a41" x="435.6" y="544.459375" transform="rotate(-0 435.6 544.459375)">agent_actions</text>
+   </g>
+   <g id="text_87">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="563.285125" transform="rotate(-0 365.04 563.285125)">PK action_id</text>
+   </g>
+   <g id="text_88">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="576.605125" transform="rotate(-0 365.04 576.605125)">FK run_id</text>
+   </g>
+   <g id="text_89">
+    <text style="font-size: 6.8px; font-family: 'Consolas'; text-anchor: start; fill: #1b2a41" x="365.04" y="589.925125" transform="rotate(-0 365.04 589.925125)">tool, risk_class, status</text>
+   </g>
+   <g id="text_90">
+    <text style="font-size: 6.9px; font-family: 'Calibri'; text-anchor: start; fill: #5b6b7f" x="7.2" y="602.975133" transform="rotate(-0 7.2 602.975133)">Arrows run from parent (PK) to child (FK). Not drawn: pipeline_runs -&gt; incidents (run_id); anomalies -&gt; incident_anomalies; </text>
+   </g>
+   <g id="text_91">
+    <text style="font-size: 6.9px; font-family: 'Calibri'; text-anchor: start; fill: #5b6b7f" x="7.2" y="613.775133" transform="rotate(-0 7.2 613.775133)">root_cause_analyses -&gt; reports (rca_id). audit_logs and security_findings are standalone tables (no foreign keys).</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p0f1d3a75e8">
+   <rect x="0" y="0" width="518.4" height="619.2"/>
+  </clipPath>
+ </defs>
+</svg>

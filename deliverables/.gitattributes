@@ -1,0 +1,2 @@
+# Generated vector diagrams contain trailing spaces inside path data.
+*.svg -whitespace

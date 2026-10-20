@@ -47,3 +47,9 @@ reports/*
 data/demo/
 data/runs/
 data/aegis.db
+
+# Documentation generation (scripts/documentation/)
+scripts/documentation/.venv-docs/
+scripts/documentation/__pycache__/
+deliverables/_build/
+deliverables/_render/

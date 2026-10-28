@@ -7,7 +7,7 @@ Everything below was opened and read (or, for generated/binary items, inspected)
 | File | Used for |
 |---|---|
 | `PROJECT_SPEC.md` (1361 lines) | Authority on intended behaviour; consulted by section number (§5 incidents, §6 detectors, §7 incident object, §8 RCA, §12 policy, §24 seeded scenario). Not re-read line by line; behaviour was checked against code. |
-| `CLAUDE.md` | Engineering rules (milestones, honesty about tests, no secrets, allowlisted agent tools). |
+| `ENGINEERING.md` | Engineering rules (milestones, honesty about tests, no secrets, allowlisted agent tools). |
 | `IMPLEMENTATION_PLAN.md` | Milestones, requirement traceability (R1 to R32), final self-audit, recorded verification results (labelled "recorded" in the handbook). |
 | `ARCHITECTURE.md` | Component contracts; every contract used in the handbook was re-checked against the code. |
 | `README.md`, `OVERNIGHT_STATUS.md`, `docs/*.md` | Commands, limitations, status table. |

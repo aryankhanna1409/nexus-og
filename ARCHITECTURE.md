@@ -2,7 +2,7 @@
 
 This document describes components, data flow, and the contracts between them.
 Where a contract is implemented in code, the code is authoritative and this
-document is updated alongside it (CLAUDE.md). Sections marked *(planned)* are
+document is updated alongside it (ENGINEERING.md). Sections marked *(planned)* are
 designs for milestones not yet implemented — see `IMPLEMENTATION_PLAN.md`.
 
 ## 1. Component overview

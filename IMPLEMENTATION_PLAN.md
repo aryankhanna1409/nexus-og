@@ -4,7 +4,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done and verified
 executed tests. A milestone is only marked `[x]` when its acceptance tests have
 been run and passed; results are recorded in the milestone's *Verification log*.
 
-Authoritative inputs: `PROJECT_SPEC.md` (functional spec) and `CLAUDE.md`
+Authoritative inputs: `PROJECT_SPEC.md` (functional spec) and `ENGINEERING.md`
 (engineering rules). Component interfaces live in `ARCHITECTURE.md`.
 
 ---
@@ -41,7 +41,7 @@ container.
 | D3 | Analytics uses **numpy** only (no pandas). Isolation Forest/DBSCAN are optional and deferred (would add scikit-learn). | Interpretable methods required first (spec §6); avoid heavy deps. |
 | D4 | Persistence: SQLAlchemy 2.x + Alembic; PostgreSQL in Docker. JSON columns use `JSON().with_variant(JSONB, "postgresql")` so the offline demo and unit tests can run on SQLite. | Spec §17 + §23 ("demo works without external infrastructure"). |
 | D5 | LLM provider abstraction with `mock` (deterministic, default when no key), `anthropic`, `openai`, `local` (OpenAI-compatible endpoint). Vendor SDKs are optional extras, imported lazily. | Spec §20, §23. |
-| D6 | DevSecOps agent operates only on a **disposable copy** of a synthetic demo service repo (`demo-workspace/`), never on this repository. Vulnerability data comes from a bundled synthetic advisory DB with IDs prefixed `DEMO-CVE-`. | CLAUDE.md: synthetic data, no arbitrary commands, keep changes contained. Avoids inventing real CVE claims. |
+| D6 | DevSecOps agent operates only on a **disposable copy** of a synthetic demo service repo (`demo-workspace/`), never on this repository. Vulnerability data comes from a bundled synthetic advisory DB with IDs prefixed `DEMO-CVE-`. | ENGINEERING.md: synthetic data, no arbitrary commands, keep changes contained. Avoids inventing real CVE claims. |
 | D7 | "Deployments" and "rollback" are simulated through a deployment registry the telemetry simulator reads. This is documented as a simulation, not presented as real infrastructure control. | Spec §29: no fake functionality disguised as real. |
 | D8 | Auth: bearer API tokens mapped to roles (`viewer`, `operator`, `approver`, `admin`), token hashes configured via env. | Spec §27; simple and testable. |
 | D9 | Redis used for rate limiting and the agent job queue; an in-process fallback exists for the offline demo and tests. | Spec §19 lists Redis; must not be a hard dependency of `make demo`. |

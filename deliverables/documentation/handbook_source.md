@@ -166,7 +166,7 @@ Table: Components, location, responsibility and rationale
 - **TypeScript** for the dashboard so the API's JSON shapes are checked at compile time.
 - **SQL** (via PostgreSQL) for relational integrity.
 
-The languages meet at three explicit interfaces: the C header (`call_analyzer.h`), the REST API with its OpenAPI schema, and the database schema. CLAUDE.md requires such interfaces to be kept explicit.
+The languages meet at three explicit interfaces: the C header (`call_analyzer.h`), the REST API with its OpenAPI schema, and the database schema. ENGINEERING.md requires such interfaces to be kept explicit.
 
 ## Trust boundaries
 
@@ -1207,7 +1207,7 @@ Table: Where things live
 
 | Path | Contents |
 |---|---|
-| `PROJECT_SPEC.md`, `IMPLEMENTATION_PLAN.md`, `ARCHITECTURE.md`, `CLAUDE.md`, `README.md` | Specification, plan with verification log, architecture, engineering instructions, overview |
+| `PROJECT_SPEC.md`, `IMPLEMENTATION_PLAN.md`, `ARCHITECTURE.md`, `ENGINEERING.md`, `README.md` | Specification, plan with verification log, architecture, engineering instructions, overview |
 | `c-library/` | `include/call_analyzer.h`, `src/*.c`, `tests/`, `CMakeLists.txt` |
 | `backend/call_analyzer/` | ctypes binding |
 | `backend/app/` | `simulation/`, `analytics/`, `models/`, `schemas/`, `api/`, `security/`, `observability/`, `llm/`, `rca/`, `reporting/`, `agents/`, `services/` |

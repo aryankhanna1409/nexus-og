@@ -15,6 +15,12 @@ network-intelligence and autonomous DevSecOps prototype. It does the following, 
 > describe real networks, packages or vulnerabilities. The production rollback
 > is a simulation.
 
+<p align="center">
+  <img src="docs/media/demo.gif" alt="make demo: telemetry, C call-log analysis, anomaly detection, correlation, RCA, agent rollback with approval, recovery" width="900">
+</p>
+
+<p align="center"><sub>Real run of <code>make demo</code> (offline, deterministic mock LLM, about 8 seconds end to end). Build output is trimmed and the report path is shortened; everything else is the program's own output.</sub></p>
+
 ---
 
 ## 1. Project overview

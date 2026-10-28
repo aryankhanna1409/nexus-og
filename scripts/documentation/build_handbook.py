@@ -287,8 +287,7 @@ def cover_page(doc: Document) -> None:
     meta = [("Version", "1.0"), ("Date", date.today().isoformat()),
             ("Repository state", f"commit {git_head()} on branch master (working tree includes the documentation under "
                                  "deliverables/)"),
-            ("Author field", "Aegis-Net project documentation (generated with Claude Code from the repository); "
-                             "no individual or organisation is named as author"),
+            ("Author field", "Aryan Khanna"),
             ("Data notice", "All data in Aegis-Net is synthetic. No claim is made about real networks.")]
     t = doc.add_table(rows=0, cols=2)
     t.alignment = WD_TABLE_ALIGNMENT.LEFT
@@ -737,7 +736,7 @@ def build() -> Path:
     cp = doc.core_properties
     cp.title = "Aegis-Net Technical Handbook"
     cp.subject = "Architecture, implementation and operation of the Aegis-Net prototype"
-    cp.author = "Aegis-Net project documentation (generated)"
+    cp.author = "Aryan Khanna"
     cp.keywords = "Aegis-Net, anomaly detection, root-cause analysis, DevSecOps"
     cp.comments = f"Generated from deliverables/documentation/handbook_source.md at commit {git_head()}"
     OUT.parent.mkdir(parents=True, exist_ok=True)

@@ -1,7 +1,8 @@
-# Aegis-Net
+# nexus-og
 
-An integrated network-intelligence and autonomous DevSecOps prototype. It
-does the following, and audits every AI decision and agent action:
+The original, full build of nexus-ai (codename **Aegis-Net**, the name still
+used inside the code, configs and documents). An integrated
+network-intelligence and autonomous DevSecOps prototype. It does the following, and audits every AI decision and agent action:
 - analyses telecom call logs with a C library;
 - detects anomalies in network KPIs;
 - correlates them with deployment, configuration and security events;

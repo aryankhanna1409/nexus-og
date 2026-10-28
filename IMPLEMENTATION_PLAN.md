@@ -198,7 +198,7 @@ Acceptance: mock provider produces deployment-regression RCA on the seeded incid
 using only tool outputs as evidence (each evidence item cites a tool call ID);
 malformed/unknown tool calls from the LLM are rejected and logged; real
 providers are exercised only if a key is present (tests skip otherwise, and the
-skip is reported). Consult the `claude-api` skill before writing the Anthropic provider.
+skip is reported). Consult the Anthropic API documentation before writing the Anthropic provider.
 
 ### M8 — Reporting engine `[x]`
 
@@ -525,7 +525,7 @@ Entries record commands actually executed and their outcome.
   exit 0. pytest **279 passed, 2 skipped** (PostgreSQL; live Anthropic — no
   key, opt-in); ASan run 272 passed + 9 skipped; mypy clean (67 files).
   Container Python 3.12: **279 passed, 2 skipped**, mypy clean.
-  - The `claude-api` skill was consulted before writing the Anthropic
+  - The Anthropic API documentation was consulted before writing the Anthropic
     provider. Request kwargs were checked against the installed SDK
     signatures (anthropic 1.15.0: `beta.messages.create` accepts `betas`,
     `fallbacks: Iterable | Literal['default']`, `output_config`, `tools`;

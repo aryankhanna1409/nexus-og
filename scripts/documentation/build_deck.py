@@ -590,7 +590,7 @@ def build() -> None:
         notes = slide.notes_slide.notes_text_frame
         notes.text = (f"SAY: {meta['say']}\n\nREADING THE VISUAL: {meta['figure']}\n\nLIKELY QUESTIONS: {meta['qa']}")
     prs.core_properties.title = "Aegis-Net Technical Presentation"
-    prs.core_properties.author = "Aegis-Net project documentation (generated)"
+    prs.core_properties.author = "Aryan Khanna"
     prs.core_properties.subject = "Technical walkthrough of the Aegis-Net prototype"
     OUT.parent.mkdir(parents=True, exist_ok=True)
     prs.save(OUT)
